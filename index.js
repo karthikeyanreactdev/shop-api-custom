@@ -56,6 +56,598 @@ const swaggerOptions = {
           bearerFormat: 'JWT',
         },
       },
+      schemas: {
+        FileObject: {
+          type: 'object',
+          properties: {
+            file_name: { type: 'string' },
+            url: { type: 'string' },
+            key: { type: 'string' },
+            alt: { type: 'string' },
+            isPrimary: { type: 'boolean' }
+          }
+        },
+        User: {
+          type: 'object',
+          properties: {
+            _id: { type: 'string' },
+            name: { type: 'string' },
+            email: { type: 'string' },
+            mobile: { type: 'string' },
+            gender: { type: 'string', enum: ['male', 'female', 'other'] },
+            role: { type: 'string', enum: ['customer', 'admin', 'vendor'] },
+            referralCode: { type: 'string' },
+            profilePicture: { type: 'array', items: { $ref: '#/components/schemas/FileObject' } },
+            isActive: { type: 'boolean' },
+            createdAt: { type: 'string', format: 'date-time' },
+            updatedAt: { type: 'string', format: 'date-time' }
+          }
+        },
+        Address: {
+          type: 'object',
+          properties: {
+            _id: { type: 'string' },
+            userId: { type: 'string' },
+            type: { type: 'string', enum: ['billing', 'shipping'] },
+            address1: { type: 'string' },
+            address2: { type: 'string' },
+            landmark: { type: 'string' },
+            city: { type: 'string' },
+            state: { type: 'string' },
+            pincode: { type: 'string' },
+            isDefault: { type: 'boolean' },
+            createdAt: { type: 'string', format: 'date-time' },
+            updatedAt: { type: 'string', format: 'date-time' }
+          }
+        },
+        Category: {
+          type: 'object',
+          properties: {
+            _id: { type: 'string' },
+            name: { type: 'string' },
+            description: { type: 'string' },
+            parentId: { type: 'string' },
+            level: { type: 'number' },
+            isActive: { type: 'boolean' },
+            isFeatured: { type: 'boolean' },
+            sortOrder: { type: 'number' },
+            image: { $ref: '#/components/schemas/FileObject' },
+            metaTags: {
+              type: 'object',
+              properties: {
+                title: { type: 'string' },
+                description: { type: 'string' },
+                keywords: { type: 'string' }
+              }
+            },
+            createdAt: { type: 'string', format: 'date-time' },
+            updatedAt: { type: 'string', format: 'date-time' }
+          }
+        },
+        CustomJsonView: {
+          type: 'object',
+          properties: {
+            designAreas: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  coordinates: {
+                    type: 'object',
+                    properties: {
+                      x: { type: 'number' },
+                      y: { type: 'number' },
+                      width: { type: 'number' },
+                      height: { type: 'number' },
+                      label: { type: 'string' }
+                    }
+                  }
+                }
+              }
+            },
+            images: { type: 'array', items: { $ref: '#/components/schemas/FileObject' } },
+            price: { type: 'number', default: 0 }
+          }
+        },
+        CustomJson: {
+          type: 'object',
+          properties: {
+            _id: { type: 'string' },
+            name: { type: 'string' },
+            isFront: { type: 'boolean' },
+            isBack: { type: 'boolean' },
+            isLeft: { type: 'boolean' },
+            isRight: { type: 'boolean' },
+            isTop: { type: 'boolean' },
+            isBottom: { type: 'boolean' },
+            views: {
+              type: 'object',
+              properties: {
+                front: { $ref: '#/components/schemas/CustomJsonView' },
+                back: { $ref: '#/components/schemas/CustomJsonView' },
+                left: { $ref: '#/components/schemas/CustomJsonView' },
+                right: { $ref: '#/components/schemas/CustomJsonView' },
+                top: { $ref: '#/components/schemas/CustomJsonView' },
+                bottom: { $ref: '#/components/schemas/CustomJsonView' }
+              }
+            },
+            availableColors: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  name: { type: 'string' },
+                  hexCode: { type: 'string' },
+                  price: { type: 'number', default: 0 }
+                }
+              }
+            },
+            availableSizes: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  name: { type: 'string' },
+                  price: { type: 'number', default: 0 }
+                }
+              }
+            },
+            isColorAvailable: { type: 'boolean' },
+            isSizeAvailable: { type: 'boolean' },
+            createdAt: { type: 'string', format: 'date-time' }
+          }
+        },
+        TierPricing: {
+          type: 'object',
+          properties: {
+            minQuantity: { type: 'number' },
+            maxQuantity: { type: 'number' },
+            discountType: { type: 'string', enum: ['percentage', 'fixed'] },
+            discountValue: { type: 'number' },
+            isActive: { type: 'boolean' }
+          }
+        },
+        DesignAreaPricing: {
+          type: 'object',
+          properties: {
+            designAreaName: { type: 'string' },
+            position: { type: 'string', enum: ['front', 'back', 'left', 'right', 'top', 'bottom'] },
+            price: { type: 'number' },
+            isActive: { type: 'boolean' }
+          }
+        },
+        Product: {
+          type: 'object',
+          properties: {
+            _id: { type: 'string' },
+            name: { type: 'string' },
+            sku: { type: 'string' },
+            brand: { type: 'string' },
+            materialType: { type: 'string' },
+            description: { type: 'string' },
+            tagLine: { type: 'string' },
+            pricing: {
+              type: 'object',
+              properties: {
+                basePrice: { type: 'number' },
+                offerPrice: { type: 'number' },
+                tierPricing: { type: 'array', items: { $ref: '#/components/schemas/TierPricing' } },
+                designAreaPricing: { type: 'array', items: { $ref: '#/components/schemas/DesignAreaPricing' } }
+              }
+            },
+            images: { type: 'array', items: { $ref: '#/components/schemas/FileObject' } },
+            categoryId: { type: 'string' },
+            customJsonId: { type: 'string' },
+            isActive: { type: 'boolean' },
+            isCustomAllowed: { type: 'boolean' },
+            isFeatured: { type: 'boolean' },
+            stock: { type: 'number' },
+            minOrderQuantity: { type: 'number' },
+            maxOrderQuantity: { type: 'number' },
+            ratings: {
+              type: 'object',
+              properties: {
+                average: { type: 'number' },
+                count: { type: 'number' }
+              }
+            },
+            tags: { type: 'array', items: { type: 'string' } },
+            specifications: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  key: { type: 'string' },
+                  value: { type: 'string' }
+                }
+              }
+            },
+            weight: {
+              type: 'object',
+              properties: {
+                value: { type: 'number' },
+                unit: { type: 'string' }
+              }
+            },
+            dimensions: {
+              type: 'object',
+              properties: {
+                length: { type: 'number' },
+                width: { type: 'number' },
+                height: { type: 'number' },
+                unit: { type: 'string' }
+              }
+            },
+            createdAt: { type: 'string', format: 'date-time' },
+            updatedAt: { type: 'string', format: 'date-time' }
+          }
+        },
+        Customization: {
+          type: 'object',
+          properties: {
+            selectedColor: {
+              type: 'object',
+              properties: {
+                name: { type: 'string' },
+                hexCode: { type: 'string' },
+                price: { type: 'number' }
+              }
+            },
+            selectedSize: {
+              type: 'object',
+              properties: {
+                name: { type: 'string' },
+                price: { type: 'number' }
+              }
+            },
+            designCustomizations: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  position: { type: 'string', enum: ['front', 'back', 'left', 'right', 'top', 'bottom'] },
+                  designAreaName: { type: 'string' },
+                  customText: { type: 'string' },
+                  customImages: { type: 'array', items: { $ref: '#/components/schemas/FileObject' } },
+                  price: { type: 'number' }
+                }
+              }
+            }
+          }
+        },
+        PriceBreakdown: {
+          type: 'object',
+          properties: {
+            basePrice: { type: 'number' },
+            designCost: { type: 'number' },
+            totalUnitPrice: { type: 'number' },
+            totalAmount: { type: 'number' }
+          }
+        },
+        CartItem: {
+          type: 'object',
+          properties: {
+            productId: { type: 'string' },
+            count: { type: 'number' },
+            customization: { $ref: '#/components/schemas/Customization' },
+            priceBreakdown: { $ref: '#/components/schemas/PriceBreakdown' },
+            addedAt: { type: 'string', format: 'date-time' }
+          }
+        },
+        Cart: {
+          type: 'object',
+          properties: {
+            _id: { type: 'string' },
+            userId: { type: 'string' },
+            items: { type: 'array', items: { $ref: '#/components/schemas/CartItem' } },
+            totalAmount: { type: 'number' },
+            updatedAt: { type: 'string', format: 'date-time' }
+          }
+        },
+        OrderItem: {
+          type: 'object',
+          properties: {
+            productId: { type: 'string' },
+            count: { type: 'number' },
+            customization: { $ref: '#/components/schemas/Customization' },
+            priceBreakdown: { $ref: '#/components/schemas/PriceBreakdown' }
+          }
+        },
+        Order: {
+          type: 'object',
+          properties: {
+            _id: { type: 'string' },
+            orderNumber: { type: 'string' },
+            userId: { type: 'string' },
+            items: { type: 'array', items: { $ref: '#/components/schemas/OrderItem' } },
+            billingAddress: {
+              type: 'object',
+              properties: {
+                address1: { type: 'string' },
+                address2: { type: 'string' },
+                landmark: { type: 'string' },
+                city: { type: 'string' },
+                state: { type: 'string' },
+                pincode: { type: 'string' }
+              }
+            },
+            shippingAddress: {
+              type: 'object',
+              properties: {
+                address1: { type: 'string' },
+                address2: { type: 'string' },
+                landmark: { type: 'string' },
+                city: { type: 'string' },
+                state: { type: 'string' },
+                pincode: { type: 'string' }
+              }
+            },
+            paymentMethod: { type: 'string', enum: ['card', 'upi', 'netbanking', 'cod', 'wallet'] },
+            paymentStatus: { type: 'string', enum: ['pending', 'completed', 'failed', 'refunded'] },
+            orderStatus: { type: 'string', enum: ['placed', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'] },
+            isScheduledDelivery: { type: 'boolean' },
+            scheduledDateTime: { type: 'string', format: 'date-time' },
+            totalAmount: { type: 'number' },
+            taxAmount: { type: 'number' },
+            shippingAmount: { type: 'number' },
+            discountAmount: { type: 'number' },
+            trackingNumber: { type: 'string' },
+            estimatedDelivery: { type: 'string', format: 'date-time' },
+            deliveredAt: { type: 'string', format: 'date-time' },
+            createdAt: { type: 'string', format: 'date-time' },
+            updatedAt: { type: 'string', format: 'date-time' }
+          }
+        },
+        Notification: {
+          type: 'object',
+          properties: {
+            _id: { type: 'string' },
+            title: { type: 'string' },
+            message: { type: 'string' },
+            type: { type: 'string', enum: ['order', 'payment', 'promotion', 'system', 'delivery'] },
+            userId: { type: 'string' },
+            isRead: { type: 'boolean' },
+            relatedOrderId: { type: 'string' },
+            broadcast: { type: 'boolean' },
+            createdAt: { type: 'string', format: 'date-time' },
+            readAt: { type: 'string', format: 'date-time' }
+          }
+        },
+        AppSettings: {
+          type: 'object',
+          properties: {
+            _id: { type: 'string' },
+            appName: { type: 'string' },
+            siteName: { type: 'string' },
+            contactEmail: { type: 'string' },
+            siteEmail: { type: 'string' },
+            contactPhone: { type: 'string' },
+            sitePhone: { type: 'string' },
+            address: { type: 'string' },
+            socialLinks: {
+              type: 'object',
+              properties: {
+                facebook: { type: 'string' },
+                twitter: { type: 'string' },
+                instagram: { type: 'string' },
+                linkedin: { type: 'string' },
+                youtube: { type: 'string' }
+              }
+            },
+            aboutUs: { type: 'string' },
+            termsAndConditions: { type: 'string' },
+            privacyPolicy: { type: 'string' },
+            currencyCode: { type: 'string' },
+            currencySymbol: { type: 'string' },
+            metaTags: {
+              type: 'object',
+              properties: {
+                title: { type: 'string' },
+                description: { type: 'string' },
+                keywords: { type: 'string' }
+              }
+            },
+            defaultLanguage: { type: 'string' },
+            emailNotifications: {
+              type: 'object',
+              properties: {
+                orderConfirmation: { type: 'boolean' },
+                orderStatusUpdate: { type: 'boolean' },
+                orderShipped: { type: 'boolean' },
+                orderDelivered: { type: 'boolean' },
+                orderCancelled: { type: 'boolean' },
+                newAccountCreated: { type: 'boolean' }
+              }
+            },
+            shopTiming: {
+              type: 'object',
+              properties: {
+                monday: {
+                  type: 'object',
+                  properties: {
+                    isOpen: { type: 'boolean' },
+                    openTime: { type: 'string' },
+                    closeTime: { type: 'string' }
+                  }
+                },
+                tuesday: {
+                  type: 'object',
+                  properties: {
+                    isOpen: { type: 'boolean' },
+                    openTime: { type: 'string' },
+                    closeTime: { type: 'string' }
+                  }
+                },
+                wednesday: {
+                  type: 'object',
+                  properties: {
+                    isOpen: { type: 'boolean' },
+                    openTime: { type: 'string' },
+                    closeTime: { type: 'string' }
+                  }
+                },
+                thursday: {
+                  type: 'object',
+                  properties: {
+                    isOpen: { type: 'boolean' },
+                    openTime: { type: 'string' },
+                    closeTime: { type: 'string' }
+                  }
+                },
+                friday: {
+                  type: 'object',
+                  properties: {
+                    isOpen: { type: 'boolean' },
+                    openTime: { type: 'string' },
+                    closeTime: { type: 'string' }
+                  }
+                },
+                saturday: {
+                  type: 'object',
+                  properties: {
+                    isOpen: { type: 'boolean' },
+                    openTime: { type: 'string' },
+                    closeTime: { type: 'string' }
+                  }
+                },
+                sunday: {
+                  type: 'object',
+                  properties: {
+                    isOpen: { type: 'boolean' },
+                    openTime: { type: 'string' },
+                    closeTime: { type: 'string' }
+                  }
+                }
+              }
+            },
+            maintenanceMode: { type: 'boolean' },
+            paymentGateways: {
+              type: 'object',
+              properties: {
+                cashOnDelivery: {
+                  type: 'object',
+                  properties: {
+                    isActive: { type: 'boolean' }
+                  }
+                },
+                razorpay: {
+                  type: 'object',
+                  properties: {
+                    isActive: { type: 'boolean' },
+                    keyId: { type: 'string' },
+                    keySecret: { type: 'string' }
+                  }
+                }
+              }
+            },
+            taxSettings: {
+              type: 'object',
+              properties: {
+                enableTax: { type: 'boolean' },
+                taxRate: { type: 'number' },
+                taxName: { type: 'string' }
+              }
+            },
+            deliverySettings: {
+              type: 'object',
+              properties: {
+                enableScheduledDelivery: { type: 'boolean' },
+                freeDeliveryMinOrder: { type: 'number' },
+                deliveryCharges: { type: 'number' }
+              }
+            },
+            createdAt: { type: 'string', format: 'date-time' },
+            updatedAt: { type: 'string', format: 'date-time' }
+          }
+        },
+        UserSettings: {
+          type: 'object',
+          properties: {
+            _id: { type: 'string' },
+            userId: { type: 'string' },
+            notifications: {
+              type: 'object',
+              properties: {
+                email: {
+                  type: 'object',
+                  properties: {
+                    orderUpdates: { type: 'boolean' },
+                    promotions: { type: 'boolean' },
+                    newsletter: { type: 'boolean' }
+                  }
+                },
+                push: {
+                  type: 'object',
+                  properties: {
+                    orderUpdates: { type: 'boolean' },
+                    promotions: { type: 'boolean' },
+                    reminders: { type: 'boolean' }
+                  }
+                },
+                sms: {
+                  type: 'object',
+                  properties: {
+                    orderUpdates: { type: 'boolean' },
+                    promotions: { type: 'boolean' }
+                  }
+                }
+              }
+            },
+            privacy: {
+              type: 'object',
+              properties: {
+                profileVisibility: { type: 'string', enum: ['private', 'public'] },
+                dataSharing: { type: 'boolean' },
+                showOnlineStatus: { type: 'boolean' }
+              }
+            },
+            preferences: {
+              type: 'object',
+              properties: {
+                currency: { type: 'string' },
+                language: { type: 'string' },
+                theme: { type: 'string', enum: ['light', 'dark', 'auto'] },
+                timezone: { type: 'string' }
+              }
+            },
+            deliveryPreferences: {
+              type: 'object',
+              properties: {
+                preferredTimeSlot: { type: 'string', enum: ['morning', 'afternoon', 'evening', 'anytime'] },
+                specialInstructions: { type: 'string' }
+              }
+            },
+            createdAt: { type: 'string', format: 'date-time' },
+            updatedAt: { type: 'string', format: 'date-time' }
+          }
+        },
+        ApiResponse: {
+          type: 'object',
+          properties: {
+            success: { type: 'boolean' },
+            message: { type: 'string' },
+            data: { type: 'object' },
+            error: { type: 'string' }
+          }
+        },
+        PaginationResponse: {
+          type: 'object',
+          properties: {
+            success: { type: 'boolean' },
+            message: { type: 'string' },
+            data: { type: 'array' },
+            pagination: {
+              type: 'object',
+              properties: {
+                page: { type: 'number' },
+                limit: { type: 'number' },
+                total: { type: 'number' },
+                pages: { type: 'number' }
+              }
+            }
+          }
+        }
+      },
     },
   },
   apis: ['./routes/*.js'],
