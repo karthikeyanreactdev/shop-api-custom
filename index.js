@@ -19,6 +19,7 @@ const orderRoutes = require('./routes/orderRoutes');
 const customJsonRoutes = require('./routes/customJsonRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const settingsRoutes = require('./routes/settingsRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -74,6 +75,7 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/custom-json', customJsonRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/settings', settingsRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
