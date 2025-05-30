@@ -292,6 +292,58 @@ class OrderController {
       });
     }
   }
+
+  // Get all orders (Admin only)
+  static async getAllOrders(req, res) {
+    try {
+      const {
+        page = 1,
+        limit = 10,
+        status,
+        paymentStatus,
+        startDate,
+        endDate
+      } = req.query;
+
+      const filter = {};
+      if (status) filter.orderStatus = status;
+      if (paymentStatus) filter.paymentStatus = paymentStatus;
+      
+      if (startDate || endDate) {
+        filter.createdAt = {};
+        if (startDate) filter.createdAt.$gte = new Date(startDate);
+        if (endDate) filter.createdAt.$lte = new Date(endDate);
+      }
+
+      const orders = await Order.find(filter)
+        .populate('userId', 'name email')
+        .populate('items.productId', 'name images sku brand')
+        .sort({ createdAt: -1 })
+        .limit(limit * 1)
+        .skip((page - 1) * limit);
+
+      const total = await Order.countDocuments(filter);
+
+      res.json({
+        success: true,
+        data: {
+          orders,
+          pagination: {
+            page: parseInt(page),
+            limit: parseInt(limit),
+            total,
+            pages: Math.ceil(total / limit)
+          }
+        }
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: 'Server error',
+        error: error.message
+      });
+    }
+  }
 }
 
 module.exports = OrderController;

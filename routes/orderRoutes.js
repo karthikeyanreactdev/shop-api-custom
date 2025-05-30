@@ -36,7 +36,7 @@ const router = express.Router();
  *       401:
  *         description: Unauthorized
  */
-router.get('/', auth, OrderController.getOrders);
+router.get('/', auth, OrderController.getUserOrders);
 
 /**
  * @swagger
