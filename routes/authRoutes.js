@@ -20,7 +20,8 @@ const router = express.Router();
  *               - name
  *               - email
  *               - password
- *               - phone
+ *               - mobile
+ *               - gender
  *             properties:
  *               name:
  *                 type: string
@@ -28,7 +29,12 @@ const router = express.Router();
  *                 type: string
  *               password:
  *                 type: string
- *               phone:
+ *               mobile:
+ *                 type: string
+ *               gender:
+ *                 type: string
+ *                 enum: [male, female, other]
+ *               referralCode:
  *                 type: string
  *     responses:
  *       201:
