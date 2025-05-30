@@ -1,4 +1,3 @@
-
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -124,6 +123,92 @@ const swaggerOptions = {
             updatedAt: { type: 'string', format: 'date-time' }
           }
         },
+        TierPricing: {
+          type: 'object',
+          properties: {
+            minQuantity: { type: 'number' },
+            maxQuantity: { type: 'number' },
+            discountType: { type: 'string', enum: ['percentage', 'fixed'] },
+            discountValue: { type: 'number' },
+            isActive: { type: 'boolean' }
+          }
+        },
+        DesignAreaPricing: {
+          type: 'object',
+          properties: {
+            designAreaName: { type: 'string' },
+            position: { type: 'string', enum: ['front', 'back', 'left', 'right', 'top', 'bottom'] },
+            price: { type: 'number' },
+            isActive: { type: 'boolean' }
+          }
+        },
+        ProductPricing: {
+          type: 'object',
+          properties: {
+            basePrice: { type: 'number' },
+            offerPrice: { type: 'number' },
+            tierPricing: { type: 'array', items: { $ref: '#/components/schemas/TierPricing' } },
+            designAreaPricing: { type: 'array', items: { $ref: '#/components/schemas/DesignAreaPricing' } }
+          }
+        },
+        Product: {
+          type: 'object',
+          properties: {
+            _id: { type: 'string' },
+            name: { type: 'string' },
+            sku: { type: 'string' },
+            brand: { type: 'string' },
+            materialType: { type: 'string' },
+            description: { type: 'string' },
+            tagLine: { type: 'string' },
+            pricing: { $ref: '#/components/schemas/ProductPricing' },
+            images: { type: 'array', items: { $ref: '#/components/schemas/FileObject' } },
+            categoryId: { type: 'string' },
+            customJsonId: { type: 'string' },
+            isActive: { type: 'boolean' },
+            isCustomAllowed: { type: 'boolean' },
+            isFeatured: { type: 'boolean' },
+            stock: { type: 'number' },
+            minOrderQuantity: { type: 'number' },
+            maxOrderQuantity: { type: 'number' },
+            ratings: {
+              type: 'object',
+              properties: {
+                average: { type: 'number' },
+                count: { type: 'number' }
+              }
+            },
+            tags: { type: 'array', items: { type: 'string' } },
+            specifications: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  key: { type: 'string' },
+                  value: { type: 'string' }
+                }
+              }
+            },
+            weight: {
+              type: 'object',
+              properties: {
+                value: { type: 'number' },
+                unit: { type: 'string' }
+              }
+            },
+            dimensions: {
+              type: 'object',
+              properties: {
+                length: { type: 'number' },
+                width: { type: 'number' },
+                height: { type: 'number' },
+                unit: { type: 'string' }
+              }
+            },
+            createdAt: { type: 'string', format: 'date-time' },
+            updatedAt: { type: 'string', format: 'date-time' }
+          }
+        },
         CustomJsonView: {
           type: 'object',
           properties: {
@@ -197,169 +282,24 @@ const swaggerOptions = {
             createdAt: { type: 'string', format: 'date-time' }
           }
         },
-        TierPricing: {
-          type: 'object',
-          properties: {
-            minQuantity: { type: 'number' },
-            maxQuantity: { type: 'number' },
-            discountType: { type: 'string', enum: ['percentage', 'fixed'] },
-            discountValue: { type: 'number' },
-            isActive: { type: 'boolean' }
-          }
-        },
-        DesignAreaPricing: {
-          type: 'object',
-          properties: {
-            designAreaName: { type: 'string' },
-            position: { type: 'string', enum: ['front', 'back', 'left', 'right', 'top', 'bottom'] },
-            price: { type: 'number' },
-            isActive: { type: 'boolean' }
-          }
-        },
-        Product: {
-          type: 'object',
-          properties: {
-            _id: { type: 'string' },
-            name: { type: 'string' },
-            sku: { type: 'string' },
-            brand: { type: 'string' },
-            materialType: { type: 'string' },
-            description: { type: 'string' },
-            tagLine: { type: 'string' },
-            pricing: {
-              type: 'object',
-              properties: {
-                basePrice: { type: 'number' },
-                offerPrice: { type: 'number' },
-                tierPricing: { type: 'array', items: { $ref: '#/components/schemas/TierPricing' } },
-                designAreaPricing: { type: 'array', items: { $ref: '#/components/schemas/DesignAreaPricing' } }
-              }
-            },
-            images: { type: 'array', items: { $ref: '#/components/schemas/FileObject' } },
-            categoryId: { type: 'string' },
-            customJsonId: { type: 'string' },
-            isActive: { type: 'boolean' },
-            isCustomAllowed: { type: 'boolean' },
-            isFeatured: { type: 'boolean' },
-            stock: { type: 'number' },
-            minOrderQuantity: { type: 'number' },
-            maxOrderQuantity: { type: 'number' },
-            ratings: {
-              type: 'object',
-              properties: {
-                average: { type: 'number' },
-                count: { type: 'number' }
-              }
-            },
-            tags: { type: 'array', items: { type: 'string' } },
-            specifications: {
-              type: 'array',
-              items: {
-                type: 'object',
-                properties: {
-                  key: { type: 'string' },
-                  value: { type: 'string' }
-                }
-              }
-            },
-            weight: {
-              type: 'object',
-              properties: {
-                value: { type: 'number' },
-                unit: { type: 'string' }
-              }
-            },
-            dimensions: {
-              type: 'object',
-              properties: {
-                length: { type: 'number' },
-                width: { type: 'number' },
-                height: { type: 'number' },
-                unit: { type: 'string' }
-              }
-            },
-            createdAt: { type: 'string', format: 'date-time' },
-            updatedAt: { type: 'string', format: 'date-time' }
-          }
-        },
-        Customization: {
-          type: 'object',
-          properties: {
-            selectedColor: {
-              type: 'object',
-              properties: {
-                name: { type: 'string' },
-                hexCode: { type: 'string' },
-                price: { type: 'number' }
-              }
-            },
-            selectedSize: {
-              type: 'object',
-              properties: {
-                name: { type: 'string' },
-                price: { type: 'number' }
-              }
-            },
-            designCustomizations: {
-              type: 'array',
-              items: {
-                type: 'object',
-                properties: {
-                  position: { type: 'string', enum: ['front', 'back', 'left', 'right', 'top', 'bottom'] },
-                  designAreaName: { type: 'string' },
-                  customText: { type: 'string' },
-                  customImages: { type: 'array', items: { $ref: '#/components/schemas/FileObject' } },
-                  price: { type: 'number' }
-                }
-              }
-            }
-          }
-        },
-        PriceBreakdown: {
-          type: 'object',
-          properties: {
-            basePrice: { type: 'number' },
-            designCost: { type: 'number' },
-            totalUnitPrice: { type: 'number' },
-            totalAmount: { type: 'number' }
-          }
-        },
-        CartItem: {
-          type: 'object',
-          properties: {
-            productId: { type: 'string' },
-            count: { type: 'number' },
-            customization: { $ref: '#/components/schemas/Customization' },
-            priceBreakdown: { $ref: '#/components/schemas/PriceBreakdown' },
-            addedAt: { type: 'string', format: 'date-time' }
-          }
-        },
-        Cart: {
-          type: 'object',
-          properties: {
-            _id: { type: 'string' },
-            userId: { type: 'string' },
-            items: { type: 'array', items: { $ref: '#/components/schemas/CartItem' } },
-            totalAmount: { type: 'number' },
-            updatedAt: { type: 'string', format: 'date-time' }
-          }
-        },
-        OrderItem: {
-          type: 'object',
-          properties: {
-            productId: { type: 'string' },
-            count: { type: 'number' },
-            customization: { $ref: '#/components/schemas/Customization' },
-            priceBreakdown: { $ref: '#/components/schemas/PriceBreakdown' }
-          }
-        },
         Order: {
           type: 'object',
           properties: {
             _id: { type: 'string' },
             orderNumber: { type: 'string' },
             userId: { type: 'string' },
-            items: { type: 'array', items: { $ref: '#/components/schemas/OrderItem' } },
+            items: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  productId: { type: 'string' },
+                  count: { type: 'number' },
+                  customization: { $ref: '#/components/schemas/Customization' },
+                  priceBreakdown: { $ref: '#/components/schemas/PriceBreakdown' }
+                }
+              }
+            },
             billingAddress: {
               type: 'object',
               properties: {
