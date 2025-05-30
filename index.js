@@ -62,7 +62,14 @@ const swaggerOptions = {
 };
 
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ 
+    message: 'Server is running successfully!',
+    timestamp: new Date().toISOString()
+  });
+});
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -77,22 +84,8 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/settings', settingsRoutes);
 
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.status(200).json({ 
-    message: 'Server is running successfully!',
-    timestamp: new Date().toISOString()
-  });
-});
-
-// Root endpoint
-app.get('/', (req, res) => {
-  res.status(200).json({
-    message: 'Welcome to E-commerce API',
-    documentation: '/api-docs',
-    health: '/health'
-  });
-});
+// Swagger API Documentation at root
+app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Global error handler
 app.use((err, req, res, next) => {
@@ -114,7 +107,7 @@ app.use('*', (req, res) => {
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server is running on port ${PORT}`);
-  console.log(`📚 API Documentation: http://localhost:${PORT}/api-docs`);
+  console.log(`📚 API Documentation: http://localhost:${PORT}/`);
   console.log(`🏥 Health Check: http://localhost:${PORT}/health`);
 });
 
