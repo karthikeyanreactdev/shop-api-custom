@@ -178,4 +178,184 @@ router.put('/addresses/:id', auth, UserController.updateAddress);
  */
 router.delete('/addresses/:id', auth, UserController.deleteAddress);
 
+// Admin routes
+/**
+ * @swagger
+ * /api/users/admin/all:
+ *   get:
+ *     summary: Get all users (Admin only)
+ *     tags: [Users - Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         description: Number of items per page
+ *       - in: query
+ *         name: role
+ *         schema:
+ *           type: string
+ *         description: Filter by user role
+ *       - in: query
+ *         name: isActive
+ *         schema:
+ *           type: boolean
+ *         description: Filter by active status
+ *     responses:
+ *       200:
+ *         description: Users retrieved successfully
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Access denied
+ */
+router.get('/admin/all', auth, UserController.getAllUsers);
+
+/**
+ * @swagger
+ * /api/users/admin/{userId}/customer-data:
+ *   get:
+ *     summary: Get complete customer data (Admin only)
+ *     tags: [Users - Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Customer data retrieved successfully
+ *       404:
+ *         description: User not found
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Access denied
+ */
+router.get('/admin/:userId/customer-data', auth, UserController.getCustomerData);
+
+/**
+ * @swagger
+ * /api/users/admin/{userId}/addresses:
+ *   get:
+ *     summary: Get user addresses (Admin only)
+ *     tags: [Users - Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Addresses retrieved successfully
+ *       404:
+ *         description: User not found
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Access denied
+ */
+router.get('/admin/:userId/addresses', auth, UserController.getUserAddresses);
+
+/**
+ * @swagger
+ * /api/users/admin/{userId}/cart:
+ *   get:
+ *     summary: Get user cart (Admin only)
+ *     tags: [Users - Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Cart retrieved successfully
+ *       404:
+ *         description: User not found
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Access denied
+ */
+router.get('/admin/:userId/cart', auth, UserController.getUserCart);
+
+/**
+ * @swagger
+ * /api/users/admin/{userId}/orders:
+ *   get:
+ *     summary: Get user orders (Admin only)
+ *     tags: [Users - Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         description: Number of items per page
+ *     responses:
+ *       200:
+ *         description: Orders retrieved successfully
+ *       404:
+ *         description: User not found
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Access denied
+ */
+router.get('/admin/:userId/orders', auth, UserController.getUserOrders);
+
+/**
+ * @swagger
+ * /api/users/admin/{userId}/toggle-status:
+ *   put:
+ *     summary: Toggle user active status (Admin only)
+ *     tags: [Users - Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: User status updated successfully
+ *       404:
+ *         description: User not found
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Access denied
+ */
+router.put('/admin/:userId/toggle-status', auth, UserController.toggleUserStatus);
+
 module.exports = router;

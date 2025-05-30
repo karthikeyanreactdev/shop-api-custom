@@ -218,6 +218,115 @@ class AddressController {
       });
     }
   }
+
+  // Get all addresses (Admin only)
+  static async getAllAddresses(req, res) {
+    try {
+      // Check if user is admin
+      if (req.user.role !== 'admin') {
+        return res.status(403).json({
+          success: false,
+          message: 'Access denied. Admin only.'
+        });
+      }
+
+      const { page = 1, limit = 10, type } = req.query;
+
+      const filter = {};
+      if (type) filter.type = type;
+
+      const addresses = await Address.find(filter)
+        .populate('userId', 'name email')
+        .sort({ createdAt: -1 })
+        .limit(limit * 1)
+        .skip((page - 1) * limit);
+
+      const total = await Address.countDocuments(filter);
+
+      res.json({
+        success: true,
+        data: {
+          addresses,
+          pagination: {
+            page: parseInt(page),
+            limit: parseInt(limit),
+            total,
+            pages: Math.ceil(total / limit)
+          }
+        }
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: 'Server error',
+        error: error.message
+      });
+    }
+  }
+
+  // Get user addresses (Admin only)
+  static async getUserAddressesByAdmin(req, res) {
+    try {
+      // Check if user is admin
+      if (req.user.role !== 'admin') {
+        return res.status(403).json({
+          success: false,
+          message: 'Access denied. Admin only.'
+        });
+      }
+
+      const { userId } = req.params;
+
+      const addresses = await Address.find({ userId })
+        .populate('userId', 'name email');
+
+      res.json({
+        success: true,
+        data: { addresses }
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: 'Server error',
+        error: error.message
+      });
+    }
+  }
+
+  // Delete any address (Admin only)
+  static async deleteAddressByAdmin(req, res) {
+    try {
+      // Check if user is admin
+      if (req.user.role !== 'admin') {
+        return res.status(403).json({
+          success: false,
+          message: 'Access denied. Admin only.'
+        });
+      }
+
+      const { addressId } = req.params;
+
+      const address = await Address.findByIdAndDelete(addressId);
+
+      if (!address) {
+        return res.status(404).json({
+          success: false,
+          message: 'Address not found'
+        });
+      }
+
+      res.json({
+        success: true,
+        message: 'Address deleted successfully'
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: 'Server error',
+        error: error.message
+      });
+    }
+  }
 }
 
 module.exports = AddressController;

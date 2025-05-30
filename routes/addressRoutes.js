@@ -1,4 +1,3 @@
-
 const express = require('express');
 const AddressController = require('../controllers/addressController');
 const { auth } = require('../middleware/auth');
@@ -192,5 +191,92 @@ router.delete('/:id', auth, AddressController.deleteAddress);
  *         description: Unauthorized
  */
 router.put('/:id/default', auth, AddressController.setDefaultAddress);
+
+// Admin routes
+/**
+ * @swagger
+ * /api/addresses/admin/all:
+ *   get:
+ *     summary: Get all addresses (Admin only)
+ *     tags: [Addresses - Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         description: Number of items per page
+ *       - in: query
+ *         name: type
+ *         schema:
+ *           type: string
+ *         description: Filter by address type
+ *     responses:
+ *       200:
+ *         description: Addresses retrieved successfully
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Access denied
+ */
+router.get('/admin/all', auth, AddressController.getAllAddresses);
+
+/**
+ * @swagger
+ * /api/addresses/admin/{userId}:
+ *   get:
+ *     summary: Get user addresses (Admin only)
+ *     tags: [Addresses - Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Addresses retrieved successfully
+ *       404:
+ *         description: User not found
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Access denied
+ */
+router.get('/admin/:userId', auth, AddressController.getUserAddressesByAdmin);
+
+/**
+ * @swagger
+ * /api/addresses/admin/{addressId}:
+ *   delete:
+ *     summary: Delete any address (Admin only)
+ *     tags: [Addresses - Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: addressId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Address deleted successfully
+ *       404:
+ *         description: Address not found
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Access denied
+ */
+router.delete('/admin/:addressId', auth, AddressController.deleteAddressByAdmin);
 
 module.exports = router;

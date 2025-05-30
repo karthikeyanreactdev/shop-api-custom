@@ -165,4 +165,86 @@ router.delete('/items/:itemId', auth, CartController.removeCartItem);
  */
 router.delete('/clear', auth, CartController.clearCart);
 
+// Admin routes
+/**
+ * @swagger
+ * /api/cart/admin/all:
+ *   get:
+ *     summary: Get all user carts (Admin only)
+ *     tags: [Cart - Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         description: Number of items per page
+ *     responses:
+ *       200:
+ *         description: Carts retrieved successfully
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Access denied
+ */
+router.get('/admin/all', auth, CartController.getAllCarts);
+
+/**
+ * @swagger
+ * /api/cart/admin/{userId}:
+ *   get:
+ *     summary: Get specific user cart (Admin only)
+ *     tags: [Cart - Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Cart retrieved successfully
+ *       404:
+ *         description: User or cart not found
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Access denied
+ */
+router.get('/admin/:userId', auth, CartController.getUserCartByAdmin);
+
+/**
+ * @swagger
+ * /api/cart/admin/{userId}/clear:
+ *   delete:
+ *     summary: Clear user cart (Admin only)
+ *     tags: [Cart - Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Cart cleared successfully
+ *       404:
+ *         description: User or cart not found
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Access denied
+ */
+router.delete('/admin/:userId/clear', auth, CartController.clearUserCartByAdmin);
+
 module.exports = router;
