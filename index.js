@@ -6,7 +6,7 @@ const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 require('dotenv').config();
 
-const connectDB = require('./config/database');
+const { connectDB } = require('./config/database');
 
 // Import routes
 const authRoutes = require('./routes/authRoutes');
