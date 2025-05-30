@@ -215,6 +215,24 @@ const createOrderSchema = Joi.object({
 });
 
 // CustomJson validation
+const viewSchema = Joi.object({
+  designAreas: Joi.array().items(Joi.object({
+    coordinates: Joi.object({
+      x: Joi.number(),
+      y: Joi.number(),
+      width: Joi.number(),
+      height: Joi.number(),
+      label: Joi.string()
+    })
+  })),
+  images: Joi.array().items(Joi.object({
+    file_name: Joi.string(),
+    url: Joi.string(),
+    key: Joi.string()
+  })),
+  price: Joi.number().min(0).default(0)
+});
+
 const customJsonSchema = Joi.object({
   name: Joi.string().required().trim(),
   isFront: Joi.boolean().default(false),
@@ -223,107 +241,13 @@ const customJsonSchema = Joi.object({
   isRight: Joi.boolean().default(false),
   isTop: Joi.boolean().default(false),
   isBottom: Joi.boolean().default(false),
-  front: Joi.object({
-    designAreas: Joi.array().items(Joi.object({
-      name: Joi.string(),
-      coordinates: Joi.object({
-        x: Joi.number(),
-        y: Joi.number(),
-        width: Joi.number(),
-        height: Joi.number()
-      })
-    })),
-    images: Joi.array().items(Joi.object({
-      file_name: Joi.string(),
-      url: Joi.string(),
-      key: Joi.string()
-    })),
-    price: Joi.number().min(0).default(0)
-  }),
-  back: Joi.object({
-    designAreas: Joi.array().items(Joi.object({
-      name: Joi.string(),
-      coordinates: Joi.object({
-        x: Joi.number(),
-        y: Joi.number(),
-        width: Joi.number(),
-        height: Joi.number()
-      })
-    })),
-    images: Joi.array().items(Joi.object({
-      file_name: Joi.string(),
-      url: Joi.string(),
-      key: Joi.string()
-    })),
-    price: Joi.number().min(0).default(0)
-  }),
-  left: Joi.object({
-    designAreas: Joi.array().items(Joi.object({
-      name: Joi.string(),
-      coordinates: Joi.object({
-        x: Joi.number(),
-        y: Joi.number(),
-        width: Joi.number(),
-        height: Joi.number()
-      })
-    })),
-    images: Joi.array().items(Joi.object({
-      file_name: Joi.string(),
-      url: Joi.string(),
-      key: Joi.string()
-    })),
-    price: Joi.number().min(0).default(0)
-  }),
-  right: Joi.object({
-    designAreas: Joi.array().items(Joi.object({
-      name: Joi.string(),
-      coordinates: Joi.object({
-        x: Joi.number(),
-        y: Joi.number(),
-        width: Joi.number(),
-        height: Joi.number()
-      })
-    })),
-    images: Joi.array().items(Joi.object({
-      file_name: Joi.string(),
-      url: Joi.string(),
-      key: Joi.string()
-    })),
-    price: Joi.number().min(0).default(0)
-  }),
-  top: Joi.object({
-    designAreas: Joi.array().items(Joi.object({
-      name: Joi.string(),
-      coordinates: Joi.object({
-        x: Joi.number(),
-        y: Joi.number(),
-        width: Joi.number(),
-        height: Joi.number()
-      })
-    })),
-    images: Joi.array().items(Joi.object({
-      file_name: Joi.string(),
-      url: Joi.string(),
-      key: Joi.string()
-    })),
-    price: Joi.number().min(0).default(0)
-  }),
-  bottom: Joi.object({
-    designAreas: Joi.array().items(Joi.object({
-      name: Joi.string(),
-      coordinates: Joi.object({
-        x: Joi.number(),
-        y: Joi.number(),
-        width: Joi.number(),
-        height: Joi.number()
-      })
-    })),
-    images: Joi.array().items(Joi.object({
-      file_name: Joi.string(),
-      url: Joi.string(),
-      key: Joi.string()
-    })),
-    price: Joi.number().min(0).default(0)
+  views: Joi.object({
+    front: viewSchema,
+    back: viewSchema,
+    left: viewSchema,
+    right: viewSchema,
+    top: viewSchema,
+    bottom: viewSchema
   }),
   availableColors: Joi.array().items(Joi.object({
     name: Joi.string(),
@@ -336,6 +260,7 @@ const customJsonSchema = Joi.object({
   })),
   isColorAvailable: Joi.boolean().default(true),
   isSizeAvailable: Joi.boolean().default(true)
+      
 });
 
 // Notification validation

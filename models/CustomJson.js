@@ -1,5 +1,26 @@
-
 const mongoose = require("mongoose");
+
+const designAreaSchema = {
+  coordinates: {
+    x: Number,
+    y: Number,
+    width: Number,
+    height: Number,
+    label: String,
+  },
+};
+
+const viewSchema = {
+  designAreas: [designAreaSchema],
+  images: [
+    {
+      file_name: String,
+      url: String,
+      key: String,
+    },
+  ],
+  price: { type: Number, default: 0 },
+};
 
 const customJsonSchema = new mongoose.Schema({
   name: {
@@ -13,131 +34,13 @@ const customJsonSchema = new mongoose.Schema({
   isRight: { type: Boolean, default: false },
   isTop: { type: Boolean, default: false },
   isBottom: { type: Boolean, default: false },
-  front: {
-    designAreas: [
-      {
-        name: String,
-        coordinates: {
-          x: Number,
-          y: Number,
-          width: Number,
-          height: Number,
-        },
-      },
-    ],
-    images: [
-      {
-        file_name: String,
-        url: String,
-        key: String,
-      },
-    ],
-    price: { type: Number, default: 0 },
-  },
-  back: {
-    designAreas: [
-      {
-        name: String,
-        coordinates: {
-          x: Number,
-          y: Number,
-          width: Number,
-          height: Number,
-        },
-      },
-    ],
-    images: [
-      {
-        file_name: String,
-        url: String,
-        key: String,
-      },
-    ],
-    price: { type: Number, default: 0 },
-  },
-  left: {
-    designAreas: [
-      {
-        name: String,
-        coordinates: {
-          x: Number,
-          y: Number,
-          width: Number,
-          height: Number,
-        },
-      },
-    ],
-    images: [
-      {
-        file_name: String,
-        url: String,
-        key: String,
-      },
-    ],
-    price: { type: Number, default: 0 },
-  },
-  right: {
-    designAreas: [
-      {
-        name: String,
-        coordinates: {
-          x: Number,
-          y: Number,
-          width: Number,
-          height: Number,
-        },
-      },
-    ],
-    images: [
-      {
-        file_name: String,
-        url: String,
-        key: String,
-      },
-    ],
-    price: { type: Number, default: 0 },
-  },
-  top: {
-    designAreas: [
-      {
-        name: String,
-        coordinates: {
-          x: Number,
-          y: Number,
-          width: Number,
-          height: Number,
-        },
-      },
-    ],
-    images: [
-      {
-        file_name: String,
-        url: String,
-        key: String,
-      },
-    ],
-    price: { type: Number, default: 0 },
-  },
-  bottom: {
-    designAreas: [
-      {
-        name: String,
-        coordinates: {
-          x: Number,
-          y: Number,
-          width: Number,
-          height: Number,
-        },
-      },
-    ],
-    images: [
-      {
-        file_name: String,
-        url: String,
-        key: String,
-      },
-    ],
-    price: { type: Number, default: 0 },
+  views: {
+    front: viewSchema,
+    back: viewSchema,
+    left: viewSchema,
+    right: viewSchema,
+    top: viewSchema,
+    bottom: viewSchema,
   },
   availableColors: [
     {

@@ -7,6 +7,47 @@ const router = express.Router();
 
 /**
  * @swagger
+ * components:
+ *   schemas:
+ *     CustomJsonView:
+ *       type: object
+ *       properties:
+ *         designAreas:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               coordinates:
+ *                 type: object
+ *                 properties:
+ *                   x:
+ *                     type: number
+ *                   y:
+ *                     type: number
+ *                   width:
+ *                     type: number
+ *                   height:
+ *                     type: number
+ *                   label:
+ *                     type: string
+ *         images:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               file_name:
+ *                 type: string
+ *               url:
+ *                 type: string
+ *               key:
+ *                 type: string
+ *         price:
+ *           type: number
+ *           default: 0
+ */
+
+/**
+ * @swagger
  * /api/custom-json:
  *   get:
  *     summary: Get all custom JSON templates
@@ -71,10 +112,53 @@ router.get('/:id', CustomJsonController.getCustomJsonById);
  *                 type: boolean
  *               isBack:
  *                 type: boolean
- *               front:
+ *               isLeft:
+ *                 type: boolean
+ *               isRight:
+ *                 type: boolean
+ *               isTop:
+ *                 type: boolean
+ *               isBottom:
+ *                 type: boolean
+ *               views:
  *                 type: object
- *               back:
- *                 type: object
+ *                 properties:
+ *                   front:
+ *                     $ref: '#/components/schemas/CustomJsonView'
+ *                   back:
+ *                     $ref: '#/components/schemas/CustomJsonView'
+ *                   left:
+ *                     $ref: '#/components/schemas/CustomJsonView'
+ *                   right:
+ *                     $ref: '#/components/schemas/CustomJsonView'
+ *                   top:
+ *                     $ref: '#/components/schemas/CustomJsonView'
+ *                   bottom:
+ *                     $ref: '#/components/schemas/CustomJsonView'
+ *               availableColors:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     name:
+ *                       type: string
+ *                     hexCode:
+ *                       type: string
+ *                     price:
+ *                       type: number
+ *               availableSizes:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     name:
+ *                       type: string
+ *                     price:
+ *                       type: number
+ *               isColorAvailable:
+ *                 type: boolean
+ *               isSizeAvailable:
+ *                 type: boolean
  *     responses:
  *       201:
  *         description: Custom JSON template created successfully
