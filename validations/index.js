@@ -156,3 +156,86 @@ module.exports = {
   addToCartSchema,
   createOrderSchema
 };
+const Joi = require('joi');
+
+// Auth validations
+const registerSchema = Joi.object({
+  name: Joi.string().required().min(2).max(50),
+  email: Joi.string().email().required(),
+  password: Joi.string().required().min(6),
+  phone: Joi.string().required().pattern(/^[0-9]{10}$/)
+});
+
+const loginSchema = Joi.object({
+  email: Joi.string().email().required(),
+  password: Joi.string().required()
+});
+
+// Category validations
+const categorySchema = Joi.object({
+  name: Joi.string().required().min(2).max(100),
+  description: Joi.string().max(500),
+  parentId: Joi.string().allow(null),
+  level: Joi.number().integer().min(0).max(5).default(0),
+  isActive: Joi.boolean().default(true),
+  isFeatured: Joi.boolean().default(false),
+  sortOrder: Joi.number().integer().min(0).default(0)
+});
+
+// Product validations
+const productSchema = Joi.object({
+  name: Joi.string().required().min(2).max(200),
+  description: Joi.string().required().max(2000),
+  shortDescription: Joi.string().max(500),
+  sku: Joi.string().required(),
+  brand: Joi.string().max(100),
+  categoryId: Joi.string().required(),
+  price: Joi.number().min(0).required(),
+  salePrice: Joi.number().min(0),
+  isOnSale: Joi.boolean().default(false),
+  stockQuantity: Joi.number().integer().min(0).default(0),
+  lowStockThreshold: Joi.number().integer().min(0).default(5),
+  weight: Joi.number().min(0),
+  dimensions: Joi.object({
+    length: Joi.number().min(0),
+    width: Joi.number().min(0),
+    height: Joi.number().min(0)
+  }),
+  isActive: Joi.boolean().default(true),
+  isFeatured: Joi.boolean().default(false),
+  tags: Joi.array().items(Joi.string()),
+  metaTags: Joi.object({
+    title: Joi.string().max(100),
+    description: Joi.string().max(200),
+    keywords: Joi.string().max(500)
+  })
+});
+
+// User validations
+const updateProfileSchema = Joi.object({
+  name: Joi.string().min(2).max(50),
+  phone: Joi.string().pattern(/^[0-9]{10}$/),
+  dateOfBirth: Joi.date(),
+  gender: Joi.string().valid('male', 'female', 'other')
+});
+
+const addressSchema = Joi.object({
+  type: Joi.string().valid('home', 'work', 'other').default('home'),
+  address1: Joi.string().required().max(200),
+  address2: Joi.string().max(200),
+  city: Joi.string().required().max(100),
+  state: Joi.string().required().max(100),
+  pincode: Joi.string().required().pattern(/^[0-9]{6}$/),
+  country: Joi.string().max(100).default('India'),
+  landmark: Joi.string().max(200),
+  isDefault: Joi.boolean().default(false)
+});
+
+module.exports = {
+  registerSchema,
+  loginSchema,
+  categorySchema,
+  productSchema,
+  updateProfileSchema,
+  addressSchema
+};
