@@ -8,17 +8,16 @@ const connectDB = async () => {
   try {
     let mongoUri;
     
-    if (process.env.NODE_ENV === 'test') {
+    if (process.env.NODE_ENV === 'production' && process.env.DB_URI) {
+      mongoUri = process.env.DB_URI;
+    } else {
+      // Use MongoDB Memory Server for development and test environments
       mongoServer = await MongoMemoryServer.create();
       mongoUri = mongoServer.getUri();
-    } else {
-      mongoUri = process.env.DB_URI || 'mongodb://localhost:27017/ecommerce';
+      console.log('Using MongoDB Memory Server for development');
     }
 
-    const conn = await mongoose.connect(mongoUri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    const conn = await mongoose.connect(mongoUri);
 
     console.log(`MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
