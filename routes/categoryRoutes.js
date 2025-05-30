@@ -73,14 +73,14 @@ router.get('/:id', CategoryController.getCategoryById);
  * @swagger
  * /api/categories:
  *   post:
- *     summary: Create new category (Admin only)
+ *     summary: Create new category with images and icon (Admin only)
  *     tags: [Categories]
  *     security:
  *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required:
@@ -100,6 +100,14 @@ router.get('/:id', CategoryController.getCategoryById);
  *                 type: boolean
  *               sortOrder:
  *                 type: integer
+ *               images:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
+ *               icon:
+ *                 type: string
+ *                 format: binary
  *     responses:
  *       201:
  *         description: Category created successfully
@@ -110,13 +118,16 @@ router.get('/:id', CategoryController.getCategoryById);
  *       403:
  *         description: Access denied
  */
-router.post('/', adminAuth, CategoryController.createCategory);
+router.post('/', adminAuth, upload.fields([
+  { name: 'images', maxCount: 5 },
+  { name: 'icon', maxCount: 1 }
+]), CategoryController.createCategory);
 
 /**
  * @swagger
  * /api/categories/{id}:
  *   put:
- *     summary: Update category (Admin only)
+ *     summary: Update category with images and icon (Admin only)
  *     tags: [Categories]
  *     security:
  *       - bearerAuth: []
@@ -126,6 +137,34 @@ router.post('/', adminAuth, CategoryController.createCategory);
  *         required: true
  *         schema:
  *           type: string
+ *     requestBody:
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               parentId:
+ *                 type: string
+ *               level:
+ *                 type: integer
+ *               isActive:
+ *                 type: boolean
+ *               isFeatured:
+ *                 type: boolean
+ *               sortOrder:
+ *                 type: integer
+ *               images:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                   format: binary
+ *               icon:
+ *                 type: string
+ *                 format: binary
  *     responses:
  *       200:
  *         description: Category updated successfully
@@ -136,7 +175,10 @@ router.post('/', adminAuth, CategoryController.createCategory);
  *       403:
  *         description: Access denied
  */
-router.put('/:id', adminAuth, CategoryController.updateCategory);
+router.put('/:id', adminAuth, upload.fields([
+  { name: 'images', maxCount: 5 },
+  { name: 'icon', maxCount: 1 }
+]), CategoryController.updateCategory);
 
 /**
  * @swagger
@@ -164,82 +206,6 @@ router.put('/:id', adminAuth, CategoryController.updateCategory);
  */
 router.delete('/:id', adminAuth, CategoryController.deleteCategory);
 
-/**
- * @swagger
- * /api/categories/{id}/images:
- *   post:
- *     summary: Upload category images (Admin only)
- *     tags: [Categories]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         multipart/form-data:
- *           schema:
- *             type: object
- *             properties:
- *               images:
- *                 type: array
- *                 items:
- *                   type: string
- *                   format: binary
- *     responses:
- *       200:
- *         description: Images uploaded successfully
- *       400:
- *         description: No files uploaded or upload failed
- *       404:
- *         description: Category not found
- *       401:
- *         description: Unauthorized
- *       403:
- *         description: Access denied
- */
-router.post('/:id/images', adminAuth, upload.array('images', 5), CategoryController.uploadCategoryImages);
 
-/**
- * @swagger
- * /api/categories/{id}/icon:
- *   post:
- *     summary: Upload category icon (Admin only)
- *     tags: [Categories]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         multipart/form-data:
- *           schema:
- *             type: object
- *             properties:
- *               icon:
- *                 type: string
- *                 format: binary
- *     responses:
- *       200:
- *         description: Icon uploaded successfully
- *       400:
- *         description: No file uploaded or upload failed
- *       404:
- *         description: Category not found
- *       401:
- *         description: Unauthorized
- *       403:
- *         description: Access denied
- */
-router.post('/:id/icon', adminAuth, upload.single('icon'), CategoryController.uploadCategoryIcon);
 
 module.exports = router;

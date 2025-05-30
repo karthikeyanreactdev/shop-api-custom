@@ -78,7 +78,7 @@ class CategoryController {
     }
   }
 
-  // Create category
+  // Create category with images and icon
   static async createCategory(req, res) {
     try {
       const { error } = categorySchema.validate(req.body);
@@ -89,7 +89,33 @@ class CategoryController {
         });
       }
 
+      // Create category first
       const category = await Category.create(req.body);
+
+      // Handle images upload if provided
+      if (req.files && req.files.images && req.files.images.length > 0) {
+        const uploadResult = await UploadService.uploadMultipleToS3(req.files.images, 'categories');
+        
+        if (uploadResult.success) {
+          const imagesWithAlt = uploadResult.data.map((image, index) => ({
+            ...image,
+            alt: req.body.alt ? req.body.alt[index] || category.name : category.name,
+            isPrimary: index === 0
+          }));
+          category.images = imagesWithAlt;
+        }
+      }
+
+      // Handle icon upload if provided
+      if (req.files && req.files.icon && req.files.icon.length > 0) {
+        const uploadResult = await UploadService.uploadToS3(req.files.icon[0], 'category-icons');
+        
+        if (uploadResult.success) {
+          category.icon = uploadResult.data;
+        }
+      }
+
+      await category.save();
 
       res.status(201).json({
         success: true,
@@ -105,7 +131,7 @@ class CategoryController {
     }
   }
 
-  // Update category
+  // Update category with images and icon
   static async updateCategory(req, res) {
     try {
       const { error } = categorySchema.validate(req.body);
@@ -116,18 +142,47 @@ class CategoryController {
         });
       }
 
-      const category = await Category.findByIdAndUpdate(
-        req.params.id,
-        { ...req.body, updatedAt: Date.now() },
-        { new: true, runValidators: true }
-      );
-
+      const category = await Category.findById(req.params.id);
       if (!category) {
         return res.status(404).json({
           success: false,
           message: 'Category not found'
         });
       }
+
+      // Update basic fields
+      Object.assign(category, req.body);
+      category.updatedAt = Date.now();
+
+      // Handle new images upload if provided
+      if (req.files && req.files.images && req.files.images.length > 0) {
+        const uploadResult = await UploadService.uploadMultipleToS3(req.files.images, 'categories');
+        
+        if (uploadResult.success) {
+          const imagesWithAlt = uploadResult.data.map((image, index) => ({
+            ...image,
+            alt: req.body.alt ? req.body.alt[index] || category.name : category.name,
+            isPrimary: index === 0 && category.images.length === 0
+          }));
+          category.images.push(...imagesWithAlt);
+        }
+      }
+
+      // Handle new icon upload if provided
+      if (req.files && req.files.icon && req.files.icon.length > 0) {
+        // Delete old icon if exists
+        if (category.icon && category.icon.key) {
+          await UploadService.deleteFromS3(category.icon.key);
+        }
+
+        const uploadResult = await UploadService.uploadToS3(req.files.icon[0], 'category-icons');
+        
+        if (uploadResult.success) {
+          category.icon = uploadResult.data;
+        }
+      }
+
+      await category.save();
 
       res.json({
         success: true,

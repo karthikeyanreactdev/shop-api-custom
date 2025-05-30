@@ -9,36 +9,49 @@ const addressSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ["billing", "shipping"],
+    enum: ["home", "work", "other", "billing", "shipping"],
+    default: "home",
     required: true,
   },
   address1: {
     type: String,
     required: true,
     trim: true,
+    maxlength: 200,
   },
   address2: {
     type: String,
     trim: true,
+    maxlength: 200,
   },
   landmark: {
     type: String,
     trim: true,
+    maxlength: 200,
   },
   city: {
     type: String,
     required: true,
     trim: true,
+    maxlength: 100,
   },
   state: {
     type: String,
     required: true,
     trim: true,
+    maxlength: 100,
   },
   pincode: {
     type: String,
     required: true,
     trim: true,
+    match: /^[0-9]{6}$/,
+  },
+  country: {
+    type: String,
+    trim: true,
+    maxlength: 100,
+    default: "India",
   },
   isDefault: {
     type: Boolean,
