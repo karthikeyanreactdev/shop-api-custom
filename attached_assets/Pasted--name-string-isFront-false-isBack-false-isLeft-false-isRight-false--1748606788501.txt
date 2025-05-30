@@ -1,0 +1,159 @@
+
+{
+  "name": "string",
+  "isFront": false,
+  "isBack": false,
+  "isLeft": false,
+  "isRight": false,
+  "isTop": false,
+  "isBottom": false,
+  "views":{
+  "front": {
+    "designAreas": [
+      {
+        
+        "coordinates": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+                       "label": "String"
+        }
+      }
+    ],
+    "images": [
+      {
+        "file_name": "string",
+        "url": "string",
+        "key": "string"
+      }
+    ],
+    "price": 0
+  },
+  "back": {
+    "designAreas": [
+      {
+       
+        "coordinates": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+           "label": "String"
+        }
+      }
+    ],
+    "images": [
+      {
+        "file_name": "string",
+        "url": "string",
+        "key": "string"
+      }
+    ],
+    "price": 0
+  },
+  "left": {
+    "designAreas": [
+      {
+      
+        "coordinates": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+           "label": "String"
+        }
+      }
+    ],
+    "images": [
+      {
+        "file_name": "string",
+        "url": "string",
+        "key": "string"
+      }
+    ],
+    "price": 0
+  },
+  "right": {
+    "designAreas": [
+      {
+       
+        "coordinates": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+           "label": "String"
+        }
+      }
+    ],
+    "images": [
+      {
+        "file_name": "string",
+        "url": "string",
+        "key": "string"
+      }
+    ],
+    "price": 0
+  },
+  "top": {
+    "designAreas": [
+      {
+       
+        "coordinates": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+           "label": "String"
+        }
+      }
+    ],
+    "images": [
+      {
+        "file_name": "string",
+        "url": "string",
+        "key": "string"
+      }
+    ],
+    "price": 0
+  },
+  "bottom": {
+    "designAreas": [
+      {
+       
+        "coordinates": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "label": "String"
+        }
+      }
+    ],
+    "images": [
+      {
+        "file_name": "string",
+        "url": "string",
+        "key": "string"
+      }
+    ],
+    "price": 0
+  },
+  },
+  "availableColors": [
+    {
+      "name": "string",
+      "hexCode": "string",
+      "price": 0
+    }
+  ],
+  "availableSizes": [
+    {
+      "name": "string",
+      "price": 0
+    }
+  ],
+  "isColorAvailable": true,
+  "isSizeAvailable": true
+}
