@@ -7,6 +7,57 @@ const router = express.Router();
 
 /**
  * @swagger
+ * /api/orders/admin/all:
+ *   get:
+ *     summary: Get all orders (Admin only)
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         description: Number of items per page
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *         description: Filter by order status
+ *       - in: query
+ *         name: paymentStatus
+ *         schema:
+ *           type: string
+ *         description: Filter by payment status
+ *       - in: query
+ *         name: startDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Filter orders from date
+ *       - in: query
+ *         name: endDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Filter orders to date
+ *     responses:
+ *       200:
+ *         description: All orders retrieved successfully
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Access denied
+ */
+router.get('/admin/all', adminAuth, OrderController.getAllOrders);
+
+/**
+ * @swagger
  * /api/orders:
  *   get:
  *     summary: Get user orders
@@ -198,56 +249,5 @@ router.put('/:id/status', adminAuth, OrderController.updateOrderStatus);
  *         description: Unauthorized
  */
 router.put('/:id/cancel', auth, OrderController.cancelOrder);
-
-/**
- * @swagger
- * /api/orders/admin/all:
- *   get:
- *     summary: Get all orders (Admin only)
- *     tags: [Orders]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: query
- *         name: page
- *         schema:
- *           type: integer
- *         description: Page number
- *       - in: query
- *         name: limit
- *         schema:
- *           type: integer
- *         description: Number of items per page
- *       - in: query
- *         name: status
- *         schema:
- *           type: string
- *         description: Filter by order status
- *       - in: query
- *         name: paymentStatus
- *         schema:
- *           type: string
- *         description: Filter by payment status
- *       - in: query
- *         name: startDate
- *         schema:
- *           type: string
- *           format: date
- *         description: Filter orders from date
- *       - in: query
- *         name: endDate
- *         schema:
- *           type: string
- *           format: date
- *         description: Filter orders to date
- *     responses:
- *       200:
- *         description: All orders retrieved successfully
- *       401:
- *         description: Unauthorized
- *       403:
- *         description: Access denied
- */
-router.get('/admin/all', adminAuth, OrderController.getAllOrders);
 
 module.exports = router;
