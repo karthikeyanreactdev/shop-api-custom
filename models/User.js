@@ -1,4 +1,3 @@
-
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
@@ -18,7 +17,7 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    minlength: 6,
+    select: false,
   },
   mobile: {
     type: String,
@@ -27,31 +26,42 @@ const userSchema = new mongoose.Schema({
   },
   gender: {
     type: String,
-    enum: ["male", "female", "other"],
+    enum: ['male', 'female', 'other'],
     required: true,
   },
   role: {
     type: String,
-    enum: ["customer", "admin", "vendor"],
-    default: "customer",
+    enum: ['customer', 'admin'],
+    default: 'customer',
+  },
+  profilePicture: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Image',
   },
   referralCode: {
     type: String,
-    trim: true,
+    unique: true,
+    sparse: true,
   },
-  profilePicture: [
-    {
-      file_name: String,
-      url: String,
-      key: String,
-    },
-  ],
+  passwordResetToken: {
+    type: String,
+    select: false,
+  },
+  passwordResetExpires: {
+    type: Date,
+    select: false,
+  },
   isActive: {
     type: Boolean,
     default: true,
   },
-  resetPasswordToken: String,
-  resetPasswordExpire: Date,
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
+  lastLogin: {
+    type: Date,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
@@ -74,4 +84,19 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
-module.exports = mongoose.model("User", userSchema);
+// Generate password reset token
+userSchema.methods.generatePasswordResetToken = function () {
+  const crypto = require('crypto');
+  const resetToken = crypto.randomBytes(32).toString('hex');
+
+  this.passwordResetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+
+  return resetToken;
+};
+
+module.exports = mongoose.model('User', userSchema);
