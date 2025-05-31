@@ -118,10 +118,7 @@ router.get('/:id', CategoryController.getCategoryById);
  *       403:
  *         description: Access denied
  */
-router.post('/', adminAuth, upload.fields([
-  { name: 'images', maxCount: 5 },
-  { name: 'icon', maxCount: 1 }
-]), CategoryController.createCategory);
+router.post('/', adminAuth, CategoryController.createCategory);
 
 /**
  * @swagger

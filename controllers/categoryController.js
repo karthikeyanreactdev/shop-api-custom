@@ -1,5 +1,5 @@
 
-const { Category } = require('../models');
+const Category = require('../models/Category');
 const { categorySchema } = require('../validations');
 const UploadService = require('../services/uploadService');
 
@@ -92,30 +92,30 @@ class CategoryController {
       // Create category first
       const category = await Category.create(req.body);
 
-      // Handle images upload if provided
-      if (req.files && req.files.images && req.files.images.length > 0) {
-        const uploadResult = await UploadService.uploadMultipleToS3(req.files.images, 'categories');
+      // // Handle images upload if provided
+      // if (req.files && req.files.images && req.files.images.length > 0) {
+      //   const uploadResult = await UploadService.uploadMultipleToS3(req.files.images, 'categories');
         
-        if (uploadResult.success) {
-          const imagesWithAlt = uploadResult.data.map((image, index) => ({
-            ...image,
-            alt: req.body.alt ? req.body.alt[index] || category.name : category.name,
-            isPrimary: index === 0
-          }));
-          category.images = imagesWithAlt;
-        }
-      }
+      //   if (uploadResult.success) {
+      //     const imagesWithAlt = uploadResult.data.map((image, index) => ({
+      //       ...image,
+      //       alt: req.body.alt ? req.body.alt[index] || category.name : category.name,
+      //       isPrimary: index === 0
+      //     }));
+      //     category.images = imagesWithAlt;
+      //   }
+      // }
 
-      // Handle icon upload if provided
-      if (req.files && req.files.icon && req.files.icon.length > 0) {
-        const uploadResult = await UploadService.uploadToS3(req.files.icon[0], 'category-icons');
+      // // Handle icon upload if provided
+      // if (req.files && req.files.icon && req.files.icon.length > 0) {
+      //   const uploadResult = await UploadService.uploadToS3(req.files.icon[0], 'category-icons');
         
-        if (uploadResult.success) {
-          category.icon = uploadResult.data;
-        }
-      }
+      //   if (uploadResult.success) {
+      //     category.icon = uploadResult.data;
+      //   }
+      // }
 
-      await category.save();
+      // await category.save();
 
       res.status(201).json({
         success: true,

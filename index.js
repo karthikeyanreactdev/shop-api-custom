@@ -19,6 +19,7 @@ const customJsonRoutes = require('./routes/customJsonRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const settingsRoutes = require('./routes/settingsRoutes');
+const fileRoutes = require('./routes/fileHandleRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -615,6 +616,7 @@ app.use('/api/custom-json', customJsonRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/settings', settingsRoutes);
+app.use('/api/file', fileRoutes);
 
 // Swagger API Documentation at root
 app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerSpec));

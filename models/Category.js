@@ -1,6 +1,15 @@
 
 const mongoose = require("mongoose");
 
+const imageSchema = new mongoose.Schema(
+  {
+    file_name: { type: String, maxlength: 255, default: null },
+    url: { type: String, default: null },
+    key: { type: String, maxlength: 255, default: null },
+  },
+  { _id: false }
+);
+
 const categorySchema = new mongoose.Schema({
   name: {
     type: String,
@@ -8,20 +17,8 @@ const categorySchema = new mongoose.Schema({
     trim: true,
   },
   description: String,
-  images: [
-    {
-      file_name: String,
-      url: String,
-      key: String,
-      alt: String,
-      isPrimary: { type: Boolean, default: false },
-    },
-  ],
-  icon: {
-    file_name: String,
-    url: String,
-    key: String,
-  },
+  images: [imageSchema],
+  icon: [imageSchema],
   parentId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Category",
@@ -64,5 +61,5 @@ categorySchema.virtual("subcategories", {
   localField: "_id",
   foreignField: "parentId",
 });
-
-module.exports = mongoose.model("Category", categorySchema);
+const Category = mongoose.model("Category", categorySchema);
+module.exports = Category;
