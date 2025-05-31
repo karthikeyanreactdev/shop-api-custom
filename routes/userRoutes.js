@@ -64,7 +64,7 @@ router.put('/profile', auth, UserController.updateProfile);
  *       401:
  *         description: Unauthorized
  */
-router.post('/profile-picture', auth, upload.single('image'), UserController.uploadProfilePicture);
+router.post('/profile-picture', auth, UserController.uploadProfilePicture);
 
 /**
  * @swagger

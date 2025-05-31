@@ -1,5 +1,14 @@
 const mongoose = require("mongoose");
 
+const imageSchema = new mongoose.Schema(
+  {
+    file_name: { type: String, maxlength: 255, default: null },
+    url: { type: String, default: null },
+    key: { type: String, maxlength: 255, default: null },
+  },
+  { _id: false }
+);
+
 const designAreaSchema = {
   coordinates: {
     x: Number,
@@ -12,13 +21,7 @@ const designAreaSchema = {
 
 const viewSchema = {
   designAreas: [designAreaSchema],
-  images: [
-    {
-      file_name: String,
-      url: String,
-      key: String,
-    },
-  ],
+  images: [imageSchema],
   price: { type: Number, default: 0 },
 };
 
@@ -63,4 +66,5 @@ const customJsonSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("CustomJson", customJsonSchema);
+const CustomJson = mongoose.model("CustomJson", customJsonSchema);
+module.exports = CustomJson;

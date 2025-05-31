@@ -1,6 +1,15 @@
 
 const mongoose = require("mongoose");
 
+const imageSchema = new mongoose.Schema(
+  {
+    file_name: { type: String, maxlength: 255, default: null },
+    url: { type: String, default: null },
+    key: { type: String, maxlength: 255, default: null },
+  },
+  { _id: false }
+);
+
 const productSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -91,15 +100,7 @@ const productSchema = new mongoose.Schema({
       },
     ],
   },
-  images: [
-    {
-      file_name: String,
-      url: String,
-      key: String,
-      alt: String,
-      isPrimary: { type: Boolean, default: false },
-    },
-  ],
+  images: [imageSchema],
   categoryId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Category",
@@ -216,4 +217,5 @@ productSchema.virtual("finalPrice").get(function () {
   return this.pricing.offerPrice || this.pricing.basePrice;
 });
 
-module.exports = mongoose.model("Product", productSchema);
+const Product = mongoose.model("Product", productSchema);
+module.exports = Product;

@@ -1,6 +1,7 @@
 
 const jwt = require('jsonwebtoken');
-const { User, UserSettings } = require('../models');
+const User = require('../models/User');
+const { UserSettings } = require('../models');
 const { registerSchema, loginSchema } = require('../validations');
 
 class AuthController {

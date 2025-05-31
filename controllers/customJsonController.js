@@ -1,6 +1,6 @@
 
-const { CustomJson } = require('../models');
-const { validateCustomJson } = require('../validations');
+const CustomJson = require('../models/CustomJson');
+const { customJsonSchema } = require('../validations/customJsonValidations');
 
 class CustomJsonController {
   // Get all custom JSON templates
@@ -64,7 +64,7 @@ class CustomJsonController {
   // Create new custom JSON template
   static async createCustomJson(req, res) {
     try {
-      const { error } = validateCustomJson(req.body);
+      const { error } = customJsonSchema.validate(req.body);
       if (error) {
         return res.status(400).json({
           success: false,

@@ -1,22 +1,26 @@
 
 const Joi = require('joi');
 
+const imageJoiSchema = Joi.object({
+  file_name: Joi.string().max(255).allow(null, ''),
+  url: Joi.string().uri().allow(null, ''),
+  key: Joi.string().max(255).allow(null, ''),
+});
+
+const designAreaJoiSchema = Joi.object({
+  coordinates: Joi.object({
+    x: Joi.number().required(),
+    y: Joi.number().required(),
+    width: Joi.number().required(),
+    height: Joi.number().required(),
+    label: Joi.string().required()
+  }).required()
+});
+
 const viewSchema = Joi.object({
-  designAreas: Joi.array().items(Joi.object({
-    coordinates: Joi.object({
-      x: Joi.number(),
-      y: Joi.number(),
-      width: Joi.number(),
-      height: Joi.number(),
-      label: Joi.string()
-    })
-  })),
-  images: Joi.array().items(Joi.object({
-    file_name: Joi.string(),
-    url: Joi.string(),
-    key: Joi.string()
-  })),
-  price: Joi.number().min(0).default(0)
+  designAreas: Joi.array().items(designAreaJoiSchema).default([]),
+  images: Joi.array().items(imageJoiSchema).default([]),
+  price: Joi.number().min(0).default(0),
 });
 
 const customJsonSchema = Joi.object({
@@ -33,22 +37,28 @@ const customJsonSchema = Joi.object({
     left: viewSchema,
     right: viewSchema,
     top: viewSchema,
-    bottom: viewSchema
-  }),
-  availableColors: Joi.array().items(Joi.object({
-    name: Joi.string(),
-    hexCode: Joi.string(),
-    price: Joi.number().min(0).default(0)
-  })),
-  availableSizes: Joi.array().items(Joi.object({
-    name: Joi.string(),
-    price: Joi.number().min(0).default(0)
-  })),
+    bottom: viewSchema,
+  }).required(),
+  availableColors: Joi.array().items(
+    Joi.object({
+      name: Joi.string().required(),
+      hexCode: Joi.string().required(),
+      price: Joi.number().min(0).default(0)
+    })
+  ).default([]),
+  availableSizes: Joi.array().items(
+    Joi.object({
+      name: Joi.string().required(),
+      price: Joi.number().min(0).default(0)
+    })
+  ).default([]),
   isColorAvailable: Joi.boolean().default(true),
-  isSizeAvailable: Joi.boolean().default(true)
+  isSizeAvailable: Joi.boolean().default(true),
+  createdAt: Joi.date().optional()
 });
 
+
 module.exports = {
-  customJsonSchema,
+    customJsonSchema,
   viewSchema
 };

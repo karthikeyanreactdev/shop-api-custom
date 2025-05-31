@@ -1,5 +1,6 @@
 
-const { Product, Category } = require('../models');
+const Product = require('../models/Product');
+const Category = require('../models/Category');
 const { productSchema } = require('../validations');
 const UploadService = require('../services/uploadService');
 

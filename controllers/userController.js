@@ -1,4 +1,5 @@
-const { User, Address, Cart, Order } = require('../models');
+const User = require('../models/User');
+const { Address, Cart, Order } = require('../models');
 const { updateProfileSchema, addressSchema } = require('../validations');
 const UploadService = require('../services/uploadService');
 
@@ -69,47 +70,52 @@ class UserController {
   }
 
   // Upload profile picture
-  static async uploadProfilePicture(req, res) {
-    try {
-      if (!req.file) {
-        return res.status(400).json({
-          success: false,
-          message: 'No file uploaded'
-        });
-      }
+ static async uploadProfilePicture(req, res) {
+  try {
+    const { profilePicture } = req.body;
 
-      const user = await User.findById(req.user.id);
-      if (!user) {
-        return res.status(404).json({
-          success: false,
-          message: 'User not found'
-        });
-      }
-
-      // Delete old profile picture if exists
-      if (user.profilePicture && user.profilePicture.key) {
-        await UploadService.deleteFromS3(user.profilePicture.key);
-      }
-
-      // Upload new profile picture
-      const uploadResult = await UploadService.uploadToS3(req.file, 'users/profile-pictures');
-
-      user.profilePicture = uploadResult;
-      await user.save();
-
-      res.json({
-        success: true,
-        message: 'Profile picture uploaded successfully',
-        data: { profilePicture: uploadResult }
-      });
-    } catch (error) {
-      res.status(500).json({
+    if (!Array.isArray(profilePicture) || profilePicture.length === 0) {
+      return res.status(400).json({
         success: false,
-        message: 'Server error',
-        error: error.message
+        message: 'No profile picture data provided'
       });
     }
+
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Delete old profile picture from S3 if any
+    if (Array.isArray(user.profilePicture) && user.profilePicture.length > 0) {
+      for (const picture of user.profilePicture) {
+        if (picture.key) {
+          await UploadService.deleteFromS3(picture.key);
+        }
+      }
+    }
+
+    // Assign the new profile picture metadata
+    user.profilePicture = profilePicture;
+    await user.save();
+
+    res.json({
+      success: true,
+      message: 'Profile picture updated successfully',
+      data: { profilePicture: user.profilePicture }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Server error',
+      error: error.message
+    });
   }
+}
+
 
   // Get user addresses
   static async getAddresses(req, res) {
