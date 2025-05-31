@@ -1,35 +1,40 @@
 const mongoose = require("mongoose");
 
-const imageSchema = new mongoose.Schema(
+const svgSchema = new mongoose.Schema(
   {
     file_name: { type: String, maxlength: 255, default: null },
     url: { type: String, default: null },
     key: { type: String, maxlength: 255, default: null },
+    alt: { type: String, maxlength: 255, default: null }
   },
   { _id: false }
 );
 
-const designAreaSchema = {
-  coordinates: {
+const designAreaSchema = new mongoose.Schema(
+  {
     x: Number,
     y: Number,
     width: Number,
     height: Number,
-    label: String,
+    label: String
   },
-};
+  { _id: false }
+);
 
-const viewSchema = {
-  designAreas: [designAreaSchema],
-  images: [imageSchema],
-  price: { type: Number, default: 0 },
-};
+const viewSchema = new mongoose.Schema(
+  {
+    designAreas: [designAreaSchema],
+    svg: [svgSchema],
+    price: { type: Number, default: 0 }
+  },
+  { _id: false }
+);
 
 const customJsonSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    trim: true,
+    trim: true
   },
   isFront: { type: Boolean, default: false },
   isBack: { type: Boolean, default: false },
@@ -43,27 +48,31 @@ const customJsonSchema = new mongoose.Schema({
     left: viewSchema,
     right: viewSchema,
     top: viewSchema,
-    bottom: viewSchema,
+    bottom: viewSchema
   },
   availableColors: [
     {
       name: String,
       hexCode: String,
-      price: { type: Number, default: 0 },
-    },
+      color: String,
+      price: { type: Number, default: 0 }
+    }
   ],
   availableSizes: [
     {
       name: String,
-      price: { type: Number, default: 0 },
-    },
+      size: String,
+      chest: String,
+      length: String,
+      price: { type: Number, default: 0 }
+    }
   ],
   isColorAvailable: { type: Boolean, default: true },
   isSizeAvailable: { type: Boolean, default: true },
   createdAt: {
     type: Date,
-    default: Date.now,
-  },
+    default: Date.now
+  }
 });
 
 const CustomJson = mongoose.model("CustomJson", customJsonSchema);

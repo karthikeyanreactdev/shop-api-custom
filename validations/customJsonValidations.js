@@ -1,25 +1,23 @@
-
 const Joi = require('joi');
 
-const imageJoiSchema = Joi.object({
+const svgJoiSchema = Joi.object({
   file_name: Joi.string().max(255).allow(null, ''),
   url: Joi.string().uri().allow(null, ''),
   key: Joi.string().max(255).allow(null, ''),
+  alt: Joi.string().max(255).allow(null, '')
 });
 
 const designAreaJoiSchema = Joi.object({
-  coordinates: Joi.object({
-    x: Joi.number().required(),
-    y: Joi.number().required(),
-    width: Joi.number().required(),
-    height: Joi.number().required(),
-    label: Joi.string().required()
-  }).required()
+  x: Joi.number().required(),
+  y: Joi.number().required(),
+  width: Joi.number().required(),
+  height: Joi.number().required(),
+  label: Joi.string().required()
 });
 
 const viewSchema = Joi.object({
   designAreas: Joi.array().items(designAreaJoiSchema).default([]),
-  images: Joi.array().items(imageJoiSchema).default([]),
+  svg: Joi.array().items(svgJoiSchema).default([]),
   price: Joi.number().min(0).default(0),
 });
 
@@ -43,12 +41,16 @@ const customJsonSchema = Joi.object({
     Joi.object({
       name: Joi.string().required(),
       hexCode: Joi.string().required(),
+      color: Joi.string().optional(), // Optional if you sometimes omit it
       price: Joi.number().min(0).default(0)
     })
   ).default([]),
   availableSizes: Joi.array().items(
     Joi.object({
       name: Joi.string().required(),
+      size: Joi.string().optional(),
+      chest: Joi.string().optional(),
+      length: Joi.string().optional(),
       price: Joi.number().min(0).default(0)
     })
   ).default([]),
@@ -57,8 +59,7 @@ const customJsonSchema = Joi.object({
   createdAt: Joi.date().optional()
 });
 
-
 module.exports = {
-    customJsonSchema,
+  customJsonSchema,
   viewSchema
 };
