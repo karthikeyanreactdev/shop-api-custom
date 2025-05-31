@@ -127,13 +127,116 @@ router.get('/:id', ProductController.getProductById);
  *                 type: string
  *               pricing:
  *                 type: object
+ *                 required:
+ *                   - basePrice
  *                 properties:
  *                   basePrice:
  *                     type: number
+ *                     minimum: 0
  *                   offerPrice:
  *                     type: number
+ *                     minimum: 0
+ *                   tierPricing:
+ *                     type: array
+ *                     items:
+ *                       type: object
+ *                       required:
+ *                         - minQuantity
+ *                         - discountType
+ *                         - discountValue
+ *                       properties:
+ *                         minQuantity:
+ *                           type: number
+ *                           minimum: 1
+ *                         maxQuantity:
+ *                           type: number
+ *                           minimum: 1
+ *                         discountType:
+ *                           type: string
+ *                           enum: [percentage, fixed]
+ *                         discountValue:
+ *                           type: number
+ *                           minimum: 0
+ *                         isActive:
+ *                           type: boolean
+ *                           default: true
+ *                   designAreaPricing:
+ *                     type: array
+ *                     items:
+ *                       type: object
+ *                       required:
+ *                         - designAreaName
+ *                         - position
+ *                         - price
+ *                       properties:
+ *                         designAreaName:
+ *                           type: string
+ *                         position:
+ *                           type: string
+ *                           enum: [front, back, left, right, top, bottom]
+ *                         price:
+ *                           type: number
+ *                           minimum: 0
+ *                         isActive:
+ *                           type: boolean
+ *                           default: true
  *               categoryId:
  *                 type: string
+ *               customJsonId:
+ *                 type: string
+ *               isActive:
+ *                 type: boolean
+ *                 default: true
+ *               isCustomAllowed:
+ *                 type: boolean
+ *                 default: false
+ *               isFeatured:
+ *                 type: boolean
+ *                 default: false
+ *               stock:
+ *                 type: number
+ *                 minimum: 0
+ *                 default: 0
+ *               minOrderQuantity:
+ *                 type: number
+ *                 minimum: 1
+ *                 default: 1
+ *               maxOrderQuantity:
+ *                 type: number
+ *                 minimum: 1
+ *               tags:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *               specifications:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     key:
+ *                       type: string
+ *                     value:
+ *                       type: string
+ *               weight:
+ *                 type: object
+ *                 properties:
+ *                   value:
+ *                     type: number
+ *                   unit:
+ *                     type: string
+ *                     default: kg
+ *               dimensions:
+ *                 type: object
+ *                 properties:
+ *                   length:
+ *                     type: number
+ *                   width:
+ *                     type: number
+ *                   height:
+ *                     type: number
+ *                   unit:
+ *                     type: string
+ *                     default: cm
  *     responses:
  *       201:
  *         description: Product created successfully
