@@ -30,6 +30,27 @@ const viewSchema = new mongoose.Schema(
   { _id: false }
 );
 
+const availableColorSchema = new mongoose.Schema(
+  {
+    name: String,
+    hexCode: String,
+    color: String,
+    price: { type: Number, default: 0 }
+  },
+  { _id: false }
+);
+
+const availableSizeSchema = new mongoose.Schema(
+  {
+    name: String,
+    size: String,
+    chest: String,
+    length: String,
+    price: { type: Number, default: 0 }
+  },
+  { _id: false }
+);
+
 const customJsonSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -50,23 +71,8 @@ const customJsonSchema = new mongoose.Schema({
     top: viewSchema,
     bottom: viewSchema
   },
-  availableColors: [
-    {
-      name: String,
-      hexCode: String,
-      color: String,
-      price: { type: Number, default: 0 }
-    }
-  ],
-  availableSizes: [
-    {
-      name: String,
-      size: String,
-      chest: String,
-      length: String,
-      price: { type: Number, default: 0 }
-    }
-  ],
+  availableColors: [availableColorSchema],
+  availableSizes: [availableSizeSchema],
   isColorAvailable: { type: Boolean, default: true },
   isSizeAvailable: { type: Boolean, default: true },
   createdAt: {
@@ -74,6 +80,7 @@ const customJsonSchema = new mongoose.Schema({
     default: Date.now
   }
 });
+
 
 const CustomJson = mongoose.model("CustomJson", customJsonSchema);
 module.exports = CustomJson;

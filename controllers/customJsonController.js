@@ -93,7 +93,7 @@ class CustomJsonController {
   // Update custom JSON template
   static async updateCustomJson(req, res) {
     try {
-      const { error } = validateCustomJson(req.body);
+      const { error } = customJsonSchema.validate(req.body);
       if (error) {
         return res.status(400).json({
           success: false,
