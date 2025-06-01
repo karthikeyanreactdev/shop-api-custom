@@ -8,6 +8,8 @@ const svgJoiSchema = Joi.object({
 });
 
 const designAreaJoiSchema = Joi.object({
+  id: Joi.string().allow('', null).optional(),
+  isCustom: Joi.boolean().default(false),
   x: Joi.number().required(),
   y: Joi.number().required(),
   width: Joi.number().required(),

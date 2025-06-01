@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { v4: uuidv4 } = require('uuid');
 
 const svgSchema = new mongoose.Schema(
   {
@@ -12,6 +13,11 @@ const svgSchema = new mongoose.Schema(
 
 const designAreaSchema = new mongoose.Schema(
   {
+    id: {
+      type: String,
+      default: () => uuidv4()  // auto-generates UUID if not provided
+    },
+    isCustom: { type: Boolean, default: false },
     x: Number,
     y: Number,
     width: Number,
