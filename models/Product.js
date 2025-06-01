@@ -10,6 +10,71 @@ const imageSchema = new mongoose.Schema(
   { _id: false }
 );
 
+const categoryTreeSchema = new mongoose.Schema(
+  {
+    selectedId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+    },
+    selectedCategory: {
+      _id: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+      },
+      name: {
+        type: String,
+        required: true,
+      },
+      description: String,
+      images: [
+        {
+          file_name: String,
+          url: String,
+          key: String,
+        },
+      ],
+      parentId: {
+        _id: {
+          type: mongoose.Schema.Types.ObjectId,
+          required: true,
+        },
+        name: String,
+      },
+      level: {
+        type: Number,
+        default: 0,
+      },
+      isActive: {
+        type: Boolean,
+        default: true,
+      },
+      isFeatured: {
+        type: Boolean,
+        default: false,
+      },
+      sortOrder: {
+        type: Number,
+        default: 0,
+      },
+      icon: [mongoose.Schema.Types.Mixed], // Adjust if icon structure is known
+      createdAt: Date,
+      updatedAt: Date,
+      __v: Number,
+    },
+    parentId: {
+      type: mongoose.Schema.Types.ObjectId,
+    },
+    level1Id: {
+      type: mongoose.Schema.Types.ObjectId,
+    },
+    level2Id: {
+      type: mongoose.Schema.Types.ObjectId,
+    },
+  },
+  { _id: false }
+);
+
+
 const productSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -106,6 +171,7 @@ const productSchema = new mongoose.Schema({
     ref: "Category",
     required: true,
   },
+  categoryTree: categoryTreeSchema,
   customJsonId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "CustomJson",
