@@ -3,6 +3,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const AWS = require('aws-sdk');
 require('dotenv').config();
 
 const { connectDB } = require('./config/database');
@@ -618,6 +619,47 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/file', fileRoutes);
 
+// Configure AWS (or use IAM roles/environment variables instead)
+AWS.config.update({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    region: process.env.AWS_REGION,
+});
+
+const s3 = new AWS.S3();
+
+// GET /download?key=<file-key>
+app.get('/download', (req, res) => {
+  const { key } = req.query;
+
+  if (!key) {
+    return res.status(400).json({ error: 'Missing S3 key in query parameters.' });
+  }
+
+  const params = {
+    Bucket: process.env.AWS_S3_BUCKET,
+    Key: key
+  };
+
+  s3.headObject(params, (err, metadata) => {
+    if (err) {
+      console.error('S3 metadata error:', err);
+      return res.status(404).json({ error: 'File not found in S3.' });
+    }
+
+    res.setHeader('Content-Type', metadata.ContentType || 'image/png');
+
+    const stream = s3.getObject(params).createReadStream();
+
+    stream.on('error', (err) => {
+      console.error('S3 stream error:', err);
+      res.status(500).json({ error: 'Error streaming file from S3.' });
+    });
+
+    stream.pipe(res);
+  });
+});
+
 // Swagger API Documentation at root
 app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
@@ -638,6 +680,9 @@ app.use('*', (req, res) => {
     message: 'Route not found'
   });
 });
+
+
+
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server is running on port ${PORT}`);
