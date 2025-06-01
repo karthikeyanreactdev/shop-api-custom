@@ -275,7 +275,7 @@ class ProductController {
   // Update product
   static async updateProduct(req, res) {
     try {
-      const { error } = productSchema.validate(req.body);
+      const { error } = productSchema.validate(req.body, { stripUnknown: true });
       if (error) {
         return res.status(400).json({
           success: false,
