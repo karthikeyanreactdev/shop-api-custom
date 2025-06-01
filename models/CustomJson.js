@@ -17,7 +17,7 @@ const designAreaSchema = new mongoose.Schema(
       type: String,
       default: () => uuidv4()  // auto-generates UUID if not provided
     },
-    isCustom: { type: Boolean, default: false },
+    isCustom: { type: Boolean, default: true },
     x: Number,
     y: Number,
     width: Number,
