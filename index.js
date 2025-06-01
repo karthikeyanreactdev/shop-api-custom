@@ -647,6 +647,10 @@ app.get('/download', (req, res) => {
       return res.status(404).json({ error: 'File not found in S3.' });
     }
 
+    // 👇 Add these headers for CORS
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    
     res.setHeader('Content-Type', metadata.ContentType || 'image/png');
 
     const stream = s3.getObject(params).createReadStream();
