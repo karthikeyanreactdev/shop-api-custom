@@ -96,12 +96,13 @@ class SettingsController {
   // Get user settings
   static async getUserSettings(req, res) {
     try {
-      let settings = await UserSettings.findOne({ userId: req.user.id });
+      console.log(req)
+      let settings = await UserSettings.findOne();
 
-      if (!settings) {
-        // Create default user settings if none exist
-        settings = await UserSettings.create({ userId: req.user.id });
-      }
+      // if (!settings) {
+      //   // Create default user settings if none exist
+      //   settings = await UserSettings.create({ userId: req.user.id });
+      // }
 
       res.json({
         success: true,

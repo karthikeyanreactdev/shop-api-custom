@@ -9,7 +9,7 @@ const router = express.Router();
  * @swagger
  * /api/settings/app:
  *   get:
- *     summary: Get app settings (Admin only)
+ *     summary: Get app settings 
  *     tags: [Settings]
  *     security:
  *       - bearerAuth: []
@@ -21,7 +21,7 @@ const router = express.Router();
  *       403:
  *         description: Access denied
  */
-router.get('/app', adminAuth, SettingsController.getAppSettings);
+router.get('/app', SettingsController.getAppSettings);
 
 /**
  * @swagger
@@ -138,7 +138,7 @@ router.put('/app/home', adminAuth, SettingsController.updateHomeSettings);
  *       401:
  *         description: Unauthorized
  */
-router.get('/user', auth, SettingsController.getUserSettings);
+router.get('/user', SettingsController.getUserSettings);
 
 /**
  * @swagger
