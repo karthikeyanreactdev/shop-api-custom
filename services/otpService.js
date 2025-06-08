@@ -2,7 +2,7 @@
  * OTP generation and verification service
  */
 const axios = require('axios');
-const config = require('../config/config');
+// const config = require('../config/config');
 
 // Generate 6-digit OTP
 exports.generateOtp = () => {
@@ -15,25 +15,25 @@ exports.sendOtp = async (mobile, otp) => {
     console.log(`Sending OTP ${otp} to ${mobile}`);
     
     // In production, use SMS API
-    if (process.env.NODE_ENV === 'production' && config.SMS_API_KEY) {
-      // Example with MSG91 API
-      const response = await axios.post(
-        'https://api.msg91.com/api/v5/otp',
-        {
-          template_id: 'YOUR_TEMPLATE_ID',
-          mobile: mobile,
-          authkey: config.SMS_API_KEY,
-          otp: otp,
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
+    // if (process.env.NODE_ENV === 'production' && config.SMS_API_KEY) {
+    //   // Example with MSG91 API
+    //   const response = await axios.post(
+    //     'https://api.msg91.com/api/v5/otp',
+    //     {
+    //       template_id: 'YOUR_TEMPLATE_ID',
+    //       mobile: mobile,
+    //       authkey: config.SMS_API_KEY,
+    //       otp: otp,
+    //     },
+    //     {
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //       },
+    //     }
+    //   );
       
-      return response.data;
-    }
+    //   return response.data;
+    // }
     
     // For development or testing, just log the OTP
     console.log(`[DEVELOPMENT MODE] OTP for ${mobile}: ${otp}`);
