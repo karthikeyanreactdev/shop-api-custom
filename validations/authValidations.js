@@ -9,6 +9,17 @@ const registerSchema = Joi.object({
   referralCode: Joi.string().optional()
 });
 
+const loginCus = Joi.object({
+    mobile: Joi.string()
+      .required()
+      .pattern(/^[0-9]{10}$/)
+      .messages({
+        "string.pattern.base": "Mobile number must be a 10-digit number",
+      }),
+    country_code: Joi.string().required(),
+    // password: Joi.string().min(6).max(30).required(),
+  });
+
 const loginSchema = Joi.object({
   email: Joi.string()
     .email()

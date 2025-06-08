@@ -21,24 +21,97 @@ class ProductController {
         sortBy = "createdAt",
         sortOrder = "desc",
       } = req.query;
+      const allCategoryId = [];
+      async function getAllDescendants(categoryId) {
+        const result = [];
+        const queue = [categoryId];
 
-      const filter = {};
-      if (category) filter.categoryId = category;
-      if (isActive !== undefined) filter.isActive = isActive === "true";
-      if (isFeatured !== undefined) filter.isFeatured = isFeatured === "true";
+        while (queue.length > 0) {
+          const currentId = queue.shift();
+          result.push(currentId);
+
+          // Find direct children of current category
+          const children = await Category.find({ parentId: currentId });
+
+          // Add their IDs to the queue
+          for (const child of children) {
+            queue.push(child._id);
+          }
+        }
+
+        // Fetch all category documents matching the collected IDs
+        const categories = await Category.find({ _id: { $in: result } });
+        // Push all _id values to allCategoryId array
+        for (const category of categories) {
+          allCategoryId.push(category._id);
+        }
+        return categories;
+      }
+
+      // if (category) {
+      //   const categoryDetail = await Category.findById({ _id: category });
+      //   if (!categoryDetail) {
+      //     return res
+      //       .status(404)
+      //       .json({ success: false, message: "Category not found" });
+      //   }
+
+      //   const levelValue = categoryDetail.level;
+
+      //   const categories = await Category.find({ level: { $gte: levelValue } });
+
+      //   res.json({
+      //     success: true,
+      //     data: categories,
+      //   });
+      // }
+
+      if (category) {
+        try {
+          const categoryDetail = await Category.findById(category);
+          if (!categoryDetail) {
+            return res
+              .status(404)
+              .json({ success: false, message: "Category not found" });
+          }
+
+          const categories = await getAllDescendants(categoryDetail._id);
+
+          // return res.json({
+          //   success: true,
+          //   data: categories,
+          // });
+        } catch (error) {
+          return res.status(500).json({
+            success: false,
+            message: "Server error",
+            error: error.message,
+          });
+        }
+      }
+
+      // res.json({allCategoryId})
+
+      const matchStage = {};
+      if (category) matchStage.categoryId = { $in: allCategoryId };
+      if (isActive !== undefined) matchStage.isActive = isActive === "true";
+      if (isFeatured !== undefined)
+        matchStage.isFeatured = isFeatured === "true";
       if (isCustomAllowed !== undefined)
-        filter.isCustomAllowed = isCustomAllowed === "true";
+        matchStage.isCustomAllowed = isCustomAllowed === "true";
 
       // Price range filter
       if (minPrice || maxPrice) {
-        filter["pricing.basePrice"] = {};
-        if (minPrice) filter["pricing.basePrice"].$gte = parseFloat(minPrice);
-        if (maxPrice) filter["pricing.basePrice"].$lte = parseFloat(maxPrice);
+        matchStage["pricing.basePrice"] = {};
+        if (minPrice)
+          matchStage["pricing.basePrice"].$gte = parseFloat(minPrice);
+        if (maxPrice)
+          matchStage["pricing.basePrice"].$lte = parseFloat(maxPrice);
       }
 
       // Search filter
       if (search) {
-        filter.$or = [
+        matchStage.$or = [
           { name: { $regex: search, $options: "i" } },
           { description: { $regex: search, $options: "i" } },
           { brand: { $regex: search, $options: "i" } },
@@ -46,17 +119,45 @@ class ProductController {
         ];
       }
 
-      const sortOptions = {};
-      sortOptions[sortBy] = sortOrder === "desc" ? -1 : 1;
+      const sortStage = {};
+      sortStage[sortBy] = sortOrder === "desc" ? -1 : 1;
 
-      const products = await Product.find(filter)
-        .populate("categoryId", "name")
-        .populate("customJsonId", "name")
-        .sort(sortOptions)
-        .limit(limit * 1)
-        .skip((page - 1) * limit);
+      const skip = (page - 1) * limit;
+      const limitNum = parseInt(limit);
 
-      const total = await Product.countDocuments(filter);
+      const productsAggregate = await Product.aggregate([
+        { $match: matchStage },
+        // Lookup for categoryId
+        {
+          $lookup: {
+            from: "categories",
+            localField: "categoryId",
+            foreignField: "_id",
+            as: "category",
+          },
+        },
+        { $unwind: { path: "$category", preserveNullAndEmptyArrays: true } },
+        // Lookup for customJsonId
+        {
+          $lookup: {
+            from: "customjsons",
+            localField: "customJsonId",
+            foreignField: "_id",
+            as: "customJson",
+          },
+        },
+        { $unwind: { path: "$customJson", preserveNullAndEmptyArrays: true } },
+        { $sort: sortStage },
+        {
+          $facet: {
+            data: [{ $skip: skip }, { $limit: limitNum }],
+            totalCount: [{ $count: "count" }],
+          },
+        },
+      ]);
+
+      const products = productsAggregate[0].data;
+      const total = productsAggregate[0].totalCount[0]?.count || 0;
 
       res.json({
         success: true,
@@ -64,9 +165,9 @@ class ProductController {
           products,
           pagination: {
             page: parseInt(page),
-            limit: parseInt(limit),
+            limit: limitNum,
             total,
-            pages: Math.ceil(total / limit),
+            pages: Math.ceil(total / limitNum),
           },
         },
       });
@@ -275,7 +376,9 @@ class ProductController {
   // Update product
   static async updateProduct(req, res) {
     try {
-      const { error } = productSchema.validate(req.body, { stripUnknown: true });
+      const { error } = productSchema.validate(req.body, {
+        stripUnknown: true,
+      });
       if (error) {
         return res.status(400).json({
           success: false,

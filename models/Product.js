@@ -175,6 +175,7 @@ const productSchema = new mongoose.Schema({
   customJsonId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "CustomJson",
+    default: null,
   },
   isActive: {
     type: Boolean,

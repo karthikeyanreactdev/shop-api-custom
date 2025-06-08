@@ -91,8 +91,7 @@ const productSchema = Joi.object({
   })
     .allow(null)
     .optional(),
-  customJsonId: Joi.string()
-    .pattern(/^[0-9a-fA-F]{24}$/)
+  customJsonId: Joi.string().allow('', null)
     .optional(),
   isActive: Joi.boolean().default(true),
   isCustomAllowed: Joi.boolean().default(false),

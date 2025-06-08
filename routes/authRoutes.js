@@ -6,6 +6,59 @@ const router = express.Router();
 
 /**
  * @swagger
+ * /auth/login-customer:
+ *   post:
+ *     summary: Authenticate user and get token in customer mobile after this call veriy-otp api
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - mobile
+ *             properties:
+ *               country_code:
+ *                 type: string
+ *                 default: '+91'
+ *                 example: '+91'
+ *               mobile:
+ *                 type: string
+ *                 example: '1234567890'
+ *     responses:
+ *       200:
+ *         description: User authenticated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 message:
+ *                   type: string
+ *                   example: Login successful
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     user:
+ *                       $ref: '#/components/schemas/UserResponse'
+ *                     token:
+ *                       type: string
+ *                       example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ *       400:
+ *         description: Bad request - Invalid credentials
+ *       401:
+ *         description: Unauthorized - Invalid credentials
+ *       404:
+ *         description: Not found - User does not exist
+ */
+router.post("/login-customer", AuthController.loginCustomerMobile);
+
+/**
+ * @swagger
  * /api/auth/register:
  *   post:
  *     summary: Register a new user

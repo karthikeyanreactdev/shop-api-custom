@@ -7,15 +7,15 @@ let mongoServer;
 const connectDB = async () => {
   try {
     let mongoUri;
-    
-    if (process.env.NODE_ENV === 'production' && process.env.DB_URI) {
-      mongoUri = process.env.DB_URI;
-    } else {
-      // Use MongoDB Memory Server for development and test environments
-      mongoServer = await MongoMemoryServer.create();
-      mongoUri = mongoServer.getUri();
-      console.log('Using MongoDB Memory Server for development');
-    }
+    mongoUri = process.env.DB_URI;
+    // if (process.env.NODE_ENV === 'production' && process.env.DB_URI) {
+    //   mongoUri = process.env.DB_URI;
+    // } else {
+    //   // Use MongoDB Memory Server for development and test environments
+    //   mongoServer = await MongoMemoryServer.create();
+    //   mongoUri = mongoServer.getUri();
+    //   console.log('Using MongoDB Memory Server for development');
+    // }
 
     const conn = await mongoose.connect(mongoUri);
 
